@@ -3,6 +3,7 @@ const { ExtractJwt } = require('passport-jwt');
 const { jwtSecret } = require('./vars');
 const User = require('../api/models/User.js');
 
+// Extract JWT from Authorization header if prefix `Bearer` is present
 const jwtOptions = {
   secretOrKey: jwtSecret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
