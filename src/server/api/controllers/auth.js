@@ -1,3 +1,4 @@
+const { omit } = require('lodash');
 const httpStatus = require('http-status');
 const moment = require('moment-timezone');
 const User = require('../models/User');
@@ -25,8 +26,10 @@ function generateTokenResponse(user, accessToken) {
  * @public
  */
 exports.register = async (req, res, next) => {
+  // delete role from req.body
+  const body = omit(req.body, ['role']);
   try {
-    const user = await new User(req.body).save();
+    const user = await new User(body).save();
     const userTransformed = user.transform();
     const token = generateTokenResponse(user, user.token());
     res.status(httpStatus.CREATED);
