@@ -25,3 +25,6 @@ yarn-error.log*
 
 # ignore .env file
 .env
+
+# ignore docs
+docs
