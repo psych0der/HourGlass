@@ -1,6 +1,12 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
-const User = require('../models/user.model');
+const {
+  SUPER_ADMIN,
+  LOGGED_USER,
+  USER_MANAGER,
+} = require('../middlewares/auth');
+const APIError = require('../utils/APIError');
+const User = require('../models/User');
 const { handler: errorHandler } = require('../middlewares/error');
 
 /**
@@ -35,7 +41,16 @@ exports.loggedIn = (req, res) => res.json(req.user.transform());
  */
 exports.create = async (req, res, next) => {
   try {
-    const user = new User(req.body);
+    /* Only super admin can create other super admins */
+    const { user: loggedUser } = req;
+    const reqBody = req.body;
+    const user = new User(reqBody);
+    if (loggedUser.role !== SUPER_ADMIN && user.role === SUPER_ADMIN) {
+      throw new APIError({
+        message: 'You are not allowed to create super admin',
+        status: httpStatus.FORBIDDEN,
+      });
+    }
     const savedUser = await user.save();
     res.status(httpStatus.CREATED);
     res.json(savedUser.transform());
@@ -45,15 +60,21 @@ exports.create = async (req, res, next) => {
 };
 
 /**
+ * Currently not being used
+ * @apiIgnore
  * Replace existing user
  * @public
  */
 exports.replace = async (req, res, next) => {
   try {
-    const { user } = req.locals;
+    const { user } = req;
     const newUser = new User(req.body);
-    const ommitRole = user.role !== 'super-admin' ? 'user' : '';
-    const newUserObject = omit(newUser.toObject(), '_id', ommitRole);
+    if (user.role !== SUPER_ADMIN && newUser.role === SUPER_ADMIN) {
+      throw new APIError({
+        message: 'You are not authorized to perform this operation',
+        status: httpStatus.FORBIDDEN,
+      });
+    }
 
     await user.update(newUserObject, { override: true, upsert: true });
     const savedUser = await User.findById(user._id);
@@ -69,11 +90,25 @@ exports.replace = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
-  const ommitRole = req.locals.user.role !== 'super-admin' ? 'user' : '';
-  const updatedUser = omit(req.body, ommitRole);
-  const user = Object.assign(req.locals.user, updatedUser);
+  const { user } = req;
+  /* Only super-admin and user-manager can change user's email */
+  if (![SUPER_ADMIN, USER_MANAGER].includes(user.role) && req.body.email) {
+    throw new APIError({
+      message: 'You are not allowed to change your email id',
+      status: httpStatus.FORBIDDEN,
+    });
+  }
 
-  user
+  const newUser = Object.assign(req.locals.user, req.body);
+
+  if (user.role !== SUPER_ADMIN && newUser.role === SUPER_ADMIN) {
+    throw new APIError({
+      message: 'You are not authorized to perform this operation',
+      status: httpStatus.FORBIDDEN,
+    });
+  }
+
+  newUser
     .save()
     .then(savedUser => res.json(savedUser.transform()))
     .catch(e => next(User.checkDuplicateEmail(e)));
@@ -84,10 +119,42 @@ exports.update = (req, res, next) => {
  * @public
  */
 exports.list = async (req, res, next) => {
+  /* Fetch user list and total user count to add hasNext and hasPrev flags */
   try {
-    const users = await User.list(req.query);
+    const [users, userCount] = await Promise.all([
+      User.list(req.query),
+      User.count(req.query),
+    ]);
+
+    const pageCount = Math.ceil(userCount / (req.query.perPage || 30));
+
     const transformedUsers = users.map(user => user.transform());
-    res.json(transformedUsers);
+    const hasNext = (req.query.page || 1) < pageCount;
+    const hasPrev = (req.query.page || 1) > 1;
+    res.json({ users: transformedUsers, hasNext, hasPrev });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Search user using query string.
+ * @public
+ */
+exports.search = async (req, res, next) => {
+  /* Fetch user list using search query and total user count to add hasNext and hasPrev flags */
+  try {
+    const [users, userCount] = await Promise.all([
+      User.search(req.query),
+      User.count(req.query),
+    ]);
+
+    const pageCount = Math.ceil(userCount / (req.query.perPage || 30));
+
+    const transformedUsers = users.map(user => user.transform());
+    const hasNext = (req.query.page || 1) < pageCount;
+    const hasPrev = (req.query.page || 1) > 1;
+    res.json({ users: transformedUsers, hasNext, hasPrev });
   } catch (error) {
     next(error);
   }
