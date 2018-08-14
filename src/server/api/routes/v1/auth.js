@@ -15,6 +15,8 @@ const router = express.Router();
  *
  * @apiParam  {String}          email     User's email
  * @apiParam  {String{6..128}}  password  User's password
+ * @apiParam  {String{6..128}}  name  User's name
+ * @apiParam  {Number}  [preferredWorkingHourPerDay]  User's preferred working hour per day
  *
  * @apiSuccess (Created 201) {String}  token.tokenType     Access Token's type
  * @apiSuccess (Created 201) {String}  token.accessToken   Authorization Token
@@ -27,17 +29,19 @@ const router = express.Router();
  * @apiSuccess (Created 201) {String}  user.id         User's id
  * @apiSuccess (Created 201) {String}  user.name       User's name
  * @apiSuccess (Created 201) {String}  user.email      User's email
- * @apiSuccess (Created 201) {String}  user.PreferredWorkingHourPerDay      User's preferredWorkingHourPerDay
+ * @apiSuccess (Created 201) {Number}  user.preferredWorkingHourPerDay      User's preferredWorkingHourPerDay
  * @apiSuccess (Created 201) {String}  user.role       User's role
  * @apiSuccess (Created 201) {Date}    user.createdAt  Timestamp
  *
  * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
  */
-router.route('/register').post(validate(register), controller.register);
+router
+  .route('/register')
+  .post(validate(register, { allowUnknownBody: false }), controller.register);
 
 /**
  * @api {post} v1/auth/login Login
- * @apiDescription Get an accessToken
+ * @apiDescription Get an accessToken(Login to the system)
  * @apiVersion 1.0.0
  * @apiName Login
  * @apiGroup Auth
@@ -58,6 +62,7 @@ router.route('/register').post(validate(register), controller.register);
  * @apiSuccess  {String}  user.email          User's email
  * @apiSuccess  {String}  user.role           User's role
  * @apiSuccess  {Date}    user.createdAt      Timestamp
+ * @apiSuccess (Created 201) {Number}  user.preferredWorkingHourPerDay   User's preferredWorkingHourPerDay
  *
  * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
  * @apiError (Unauthorized 401)  Unauthorized     Incorrect email or password
