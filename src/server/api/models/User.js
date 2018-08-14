@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
       enum: roles,
       default: 'user',
     },
-    PreferredWorkingHourPerDay: {
+    preferredWorkingHourPerDay: {
       type: Number,
       min: 0,
       max: 24,
@@ -81,7 +81,14 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'role', 'createdAt'];
+    const fields = [
+      'id',
+      'name',
+      'email',
+      'role',
+      'createdAt',
+      'preferredWorkingHourPerDay',
+    ];
 
     fields.forEach(field => {
       transformed[field] = this[field];
@@ -174,19 +181,70 @@ userSchema.statics = {
   },
 
   /**
-   * List users in descending order of 'createdAt' timestamp.
+   * List users specified by sortBy and sortOrder
    *
    * @param {number} skip - Number of users to be skipped.
    * @param {number} limit - Limit number of users to be returned.
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
    * @returns {Promise<User[]>}
    */
-  list({ page = 1, perPage = 30, name, email, role }) {
+  list({
+    page = 1,
+    perPage = 30,
+    sortBy = 'createdAt',
+    sortOrder = 1,
+    name,
+    email,
+    role,
+  }) {
     const options = omitBy({ name, email, role }, isNil);
-
     return this.find(options)
-      .sort({ createdAt: -1 })
+      .sort({ [sortBy]: sortOrder })
       .skip(perPage * (page - 1))
       .limit(perPage)
+      .exec();
+  },
+
+  /**
+   * Search users specified by a query string(matching name or email address) and optionally sort using sortBy and sortOrder
+   *
+   * @param {number} page -  Skip to page specified if exists
+   * @param {number} perPage - Number of results in a single request
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @returns {Promise<User[]>}
+   */
+  search({
+    page = 1,
+    perPage = 30,
+    sortBy = 'createdAt',
+    sortOrder = 1,
+    query,
+  }) {
+    return this.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    })
+      .sort({ [sortBy]: sortOrder })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
+  },
+
+  /**
+   * Count number of users in database according to search criteria
+   *
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @returns {Promise<User[]>}
+   */
+  count({ name, email, role }) {
+    const options = omitBy({ name, email, role }, isNil);
+    return this.find(options)
+      .count()
       .exec();
   },
 
@@ -216,6 +274,9 @@ userSchema.statics = {
     return error;
   },
 };
+
+/* Add text indices to name and email for text search */
+userSchema.index({ name: 'text', email: 'text' });
 
 /**
  * @typedef User
