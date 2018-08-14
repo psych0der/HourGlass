@@ -7,10 +7,14 @@ module.exports = {
       email: Joi.string()
         .email()
         .required(),
+      name: Joi.string().required(),
       password: Joi.string()
         .required()
         .min(6)
         .max(128),
+      preferredWorkingHourPerDay: Joi.number()
+        .min(0)
+        .max(24),
     },
   },
 

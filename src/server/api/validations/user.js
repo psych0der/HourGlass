@@ -10,8 +10,22 @@ module.exports = {
         .min(1)
         .max(100),
       name: Joi.string(),
+      sortBy: Joi.string().valid(['name', 'role', 'email', 'createdAt']),
+      sortOrder: Joi.number().only([1, -1]),
       email: Joi.string(),
       role: Joi.string().valid(User.roles),
+    },
+  },
+  // GET /v1/users/search
+  searchUsers: {
+    query: {
+      page: Joi.number().min(1),
+      perPage: Joi.number()
+        .min(1)
+        .max(100),
+      query: Joi.string(),
+      sortBy: Joi.string().valid(['name', 'role', 'email', 'createdAt']),
+      sortOrder: Joi.number().only([1, -1]),
     },
   },
 
@@ -26,6 +40,9 @@ module.exports = {
         .max(128)
         .required(),
       name: Joi.string().max(128),
+      preferredWorkingHourPerDay: Joi.number()
+        .min(0)
+        .max(24),
       role: Joi.string().valid(User.roles),
     },
   },
@@ -40,7 +57,12 @@ module.exports = {
         .min(6)
         .max(128)
         .required(),
-      name: Joi.string().max(128),
+      name: Joi.string()
+        .max(128)
+        .required(),
+      preferredWorkingHourPerDay: Joi.number()
+        .min(0)
+        .max(24),
       role: Joi.string().valid(User.roles),
     },
     params: {
@@ -58,6 +80,9 @@ module.exports = {
         .min(6)
         .max(128),
       name: Joi.string().max(128),
+      preferredWorkingHourPerDay: Joi.number()
+        .min(0)
+        .max(24),
       role: Joi.string().valid(User.roles),
     },
     params: {
