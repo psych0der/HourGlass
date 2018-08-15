@@ -4,7 +4,6 @@ const controller = require('../../controllers/user');
 const {
   authorize,
   SUPER_ADMIN,
-  LOGGED_USER,
   USER_MANAGER,
 } = require('../../middlewares/auth');
 const {
@@ -14,6 +13,8 @@ const {
   replaceUser,
   updateUser,
 } = require('../../validations/user');
+
+const timeTrackRouter = require('./timeTrack');
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ router
    * @apiParam  (Query string) {String}             [email]      User's email
    * @apiParam  (Query string) {String="email", "name", "role", "createdAt"} [sortBy=createdAt]     name of the field to sort by
    * @apiParam  (Query string) {Number=-1,1}       [sortOder=1] sort order (1 for ascending and -1 for descending)
-   * @apiParam  (Query string) {String=user,admin}  [role]       User's role
+   * @apiParam  (Query string) {String=user,user-manager, super-admin}  [role]       User's role
    *
    * @apiSuccess {Object[]} users List of users.
    * @apiSuccess {Boolean}  hasNext    specifies if next page of users list exist
@@ -68,7 +69,7 @@ router
    * @apiParam  {String{6..128}}     password  User's password
    * @apiParam  {String{..128}}      name    User's name
    * @apiParam  {String{..128}}      [preferredWorkingHourPerDay]    User's preferredWorkingHourPerDay
-   * @apiParam  {String=user,admin}  [role]    User's role
+   * @apiParam  {String=user, user-manager, super-admin}  [role]    User's role
    *
    * @apiSuccess (Created 201) {String}  id         User's id
    * @apiSuccess (Created 201) {String}  name       User's name
@@ -143,6 +144,7 @@ router
   .get(authorize(), controller.loggedIn);
 
 router
+  .use('/:userId/timeTracks', timeTrackRouter) // mount timeTracker router at userId level
   .route('/:userId')
   /**
    * @api {get} v1/users/:id Get User
@@ -166,40 +168,6 @@ router
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
   .get(authorize(), controller.get)
-
-  /**
-   * @apiIgnore Not finished Method
-   * @api {put} v1/users/:id Replace User
-   * @apiDescription Replace the whole user document with a new one
-   * @apiVersion 1.0.0
-   * @apiName ReplaceUser
-   * @apiGroup User
-   * @apiPermission user
-   *
-   * @apiHeader {String} Authorization  User's access token
-   *
-   * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      name    User's name
-   * @apiParam  {String{..128}}      [preferredWorkingHourPerDay]    User's preferredWorkingHourPerDay
-   * @apiParam  {String=user,admin}  [role]    User's role
-   * (You must be an admin to change the user's role)
-   *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {String}  email      User's email
-   * @apiSuccess {String}  role       User's role
-   * @apiSuccess {String}  preferredWorkingHourPerDay       User's preferredWorkingHourPerDay
-   * @apiSuccess {Date}    createdAt  Timestamp
-   *
-   * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
-   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
-   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
-   * @apiError (Not Found 404)    NotFound     User does not exist
-   *
-   * Not required as of now
-   */
-  // .put(authorize(), validate(replaceUser), controller.replace)
 
   /**
    * @api {patch} v1/users/:id Update User
