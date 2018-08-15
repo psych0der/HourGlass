@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const idvalidator = require('mongoose-id-validator');
+
 const httpStatus = require('http-status');
 const { omitBy, isNil, some } = require('lodash');
 const APIError = require('../utils/APIError');
@@ -110,7 +112,7 @@ timeTrackSchema.statics = {
     date,
     userId,
   }) {
-    const options = omitBy({ note, date }, isNil);
+    const options = omitBy({ note, date, userId }, isNil);
     const [timeTracklist, count] = await Promise.all([
       this.find(options)
         .sort({ [sortBy]: sortOrder })
@@ -228,6 +230,9 @@ timeTrackSchema.statics = {
 
 /* Add text index to note */
 timeTrackSchema.index({ note: 'text' });
+
+/* add ref validation plugin */
+timeTrackSchema.plugin(idvalidator);
 
 /**
  * @typedef TimeTrack
