@@ -43,7 +43,15 @@ const timeTrackSchema = new mongoose.Schema(
 timeTrackSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'note', 'date', 'userId', 'createdAt', 'duration'];
+    const fields = [
+      'id',
+      'note',
+      'date',
+      'userId',
+      'createdAt',
+      'updatedAt',
+      'duration',
+    ];
 
     fields.forEach(field => {
       transformed[field] = this[field];
@@ -102,21 +110,17 @@ timeTrackSchema.statics = {
     date,
     userId,
   }) {
-    if (!userId) {
-      throw new APIError({
-        message: 'userId cannot be empty while listing timeTracks',
-        status: httpStatus.BAD_REQUEST,
-      });
-    }
     const options = omitBy({ note, date }, isNil);
-    const timeTracklist = await this.find(options)
-      .sort({ [sortBy]: sortOrder })
-      .skip(perPage * (page - 1))
-      .limit(perPage)
-      .exec();
-    const count = await this.find(options)
-      .count()
-      .exec();
+    const [timeTracklist, count] = await Promise.all([
+      this.find(options)
+        .sort({ [sortBy]: sortOrder })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(),
+      this.find(options)
+        .count()
+        .exec(),
+    ]);
 
     return { timeTracklist, count };
   },
@@ -143,34 +147,28 @@ timeTrackSchema.statics = {
     endDate,
     userId,
   }) {
-    if (some([userId, startDate, endDate], null)) {
-      throw new APIError({
-        message:
-          'Invalid parameters sent. userId, startDate and endDate should contain valid values',
-        status: httpStatus.BAD_REQUEST,
-      });
-    }
-    const filteredTimeTracks = await this.find({
-      $and: [
-        { userId },
-        { date: { $gte: startDate } },
-        { date: { $lte: endDate } },
-      ],
-    })
-      .sort({ [sortBy]: sortOrder })
-      .skip(perPage * (page - 1))
-      .limit(perPage)
-      .exec();
-
-    const count = await this.find({
-      $and: [
-        { userId },
-        { date: { $gte: startDate } },
-        { date: { $lte: endDate } },
-      ],
-    })
-      .count()
-      .exec();
+    const [filteredTimeTracks, count] = await Promise.all([
+      this.find({
+        $and: [
+          { userId },
+          { date: { $gte: startDate } },
+          { date: { $lte: endDate } },
+        ],
+      })
+        .sort({ [sortBy]: sortOrder })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(),
+      this.find({
+        $and: [
+          { userId },
+          { date: { $gte: startDate } },
+          { date: { $lte: endDate } },
+        ],
+      })
+        .count()
+        .exec(),
+    ]);
 
     return { filteredTimeTracks, count };
   },
@@ -194,24 +192,20 @@ timeTrackSchema.statics = {
     query = '',
     userId,
   }) {
-    if (!userId) {
-      throw new APIError({
-        message: 'userId cannot be empty while listing timeTracks',
-        status: httpStatus.BAD_REQUEST,
-      });
-    }
-    const searchResult = await this.find({
-      $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
-    })
-      .sort({ [sortBy]: sortOrder })
-      .skip(perPage * (page - 1))
-      .limit(perPage)
-      .exec();
-    const count = this.find({
-      $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
-    })
-      .count()
-      .exec();
+    const [searchResult, count] = await Promise.all([
+      this.find({
+        $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
+      })
+        .sort({ [sortBy]: sortOrder })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(),
+      this.find({
+        $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
+      })
+        .count()
+        .exec(),
+    ]);
 
     return { searchResult, count };
   },
