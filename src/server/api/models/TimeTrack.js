@@ -1,0 +1,241 @@
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const { omitBy, isNil, some } = require('lodash');
+const APIError = require('../utils/APIError');
+
+/**
+ * User Schema
+ * @private
+ */
+const timeTrackSchema = new mongoose.Schema(
+  {
+    date: {
+      type: Date,
+      required: true,
+      default: Date.now,
+      index: true,
+    },
+    note: {
+      type: String,
+      maxlength: 1024,
+      index: true,
+      trim: true,
+    },
+    duration: {
+      type: Number,
+      min: 0,
+      max: 24,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+/**
+ * Methods
+ */
+timeTrackSchema.method({
+  transform() {
+    const transformed = {};
+    const fields = ['id', 'note', 'date', 'userId', 'createdAt', 'duration'];
+
+    fields.forEach(field => {
+      transformed[field] = this[field];
+    });
+
+    return transformed;
+  },
+});
+
+/**
+ * Statics
+ */
+timeTrackSchema.statics = {
+  /**
+   * Get time track entry
+   *
+   * @param {ObjectId} id - The objectId of timeTrack object.
+   * @returns {Promise<User, APIError>}
+   */
+  async get(id) {
+    try {
+      let timeTrackObject;
+
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        timeTrackObject = await this.findById(id).exec();
+      }
+      if (timeTrackObject) {
+        return timeTrackObject.transform();
+      }
+
+      throw new APIError({
+        message: 'timeTrackObject does not exist',
+        status: httpStatus.NOT_FOUND,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * List timeTrack objects of particular user specified by sortBy and sortOrder and
+   * optionally filtered by date, note or userId
+   *
+   * @param {number} skip - Number of timeTrack to be skipped.
+   * @param {number} limit - Limit number of timeTrack to be returned.
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @returns {Promise<TimeTrack[]>}
+   */
+  async list({
+    page = 1,
+    perPage = 30,
+    sortBy = 'date',
+    sortOrder = -1,
+    note,
+    date,
+    userId,
+  }) {
+    if (!userId) {
+      throw new APIError({
+        message: 'userId cannot be empty while listing timeTracks',
+        status: httpStatus.BAD_REQUEST,
+      });
+    }
+    const options = omitBy({ note, date }, isNil);
+    const timeTracklist = await this.find(options)
+      .sort({ [sortBy]: sortOrder })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
+    const count = await this.find(options)
+      .count()
+      .exec();
+
+    return { timeTracklist, count };
+  },
+
+  /**
+   * List timeTrack objects between specified dates
+   * and sorted using attribute specified
+   *
+   * @param {number} skip - Number of timeTrack to be skipped.
+   * @param {number} limit - Limit number of timeTrack to be returned.
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @param {Date} startDate - start date of range
+   * @param {Date} endDate - end date for filter range
+   * @param {String} userId - userId of the timetracks
+   * @returns {Promise<TimeTrack[]>}
+   */
+  async filterByDate({
+    page = 1,
+    perPage = 30,
+    sortBy = 'date',
+    sortOrder = -1,
+    startDate,
+    endDate,
+    userId,
+  }) {
+    if (some([userId, startDate, endDate], null)) {
+      throw new APIError({
+        message:
+          'Invalid parameters sent. userId, startDate and endDate should contain valid values',
+        status: httpStatus.BAD_REQUEST,
+      });
+    }
+    const filteredTimeTracks = await this.find({
+      $and: [
+        { userId },
+        { date: { $gte: startDate } },
+        { date: { $lte: endDate } },
+      ],
+    })
+      .sort({ [sortBy]: sortOrder })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
+
+    const count = await this.find({
+      $and: [
+        { userId },
+        { date: { $gte: startDate } },
+        { date: { $lte: endDate } },
+      ],
+    })
+      .count()
+      .exec();
+
+    return { filteredTimeTracks, count };
+  },
+
+  /**
+   * Search timeTracks of a particular user specified by a query string matching note
+   * and optionally sort using sortBy and sortOrder
+   *
+   * @param {number} page -  Skip to page specified if exists
+   * @param {number} perPage - Number of results in a single request
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @param {String} userId - userId of the timetracks
+   * @returns {Promise<TimeTrack[]>}
+   */
+  async search({
+    page = 1,
+    perPage = 30,
+    sortBy = 'date',
+    sortOrder = -1,
+    query = '',
+    userId,
+  }) {
+    if (!userId) {
+      throw new APIError({
+        message: 'userId cannot be empty while listing timeTracks',
+        status: httpStatus.BAD_REQUEST,
+      });
+    }
+    const searchResult = await this.find({
+      $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
+    })
+      .sort({ [sortBy]: sortOrder })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
+    const count = this.find({
+      $and: [{ note: { $regex: query, $options: 'i' } }, { userId }],
+    })
+      .count()
+      .exec();
+
+    return { searchResult, count };
+  },
+
+  /**
+   * Count number of timeTracks in database according to search criteria
+   *
+   * @param {String} sortBy - Criteria to sort by
+   * @param {Number} sortOrder - Sort order
+   * @param {String} userId - userId of the timetracks
+   * @returns {Promise<User[]>}
+   */
+  count({ note, date, userId }) {
+    const options = omitBy({ note, date, userId }, isNil);
+    return this.find(options)
+      .count()
+      .exec();
+  },
+};
+
+/* Add text index to note */
+timeTrackSchema.index({ note: 'text' });
+
+/**
+ * @typedef TimeTrack
+ */
+module.exports = mongoose.model('TimeTrack', timeTrackSchema);
