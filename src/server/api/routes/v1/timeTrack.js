@@ -60,7 +60,7 @@ router
    * @apiHeader {String} Authorization  User's access token
    *
    * @apiParam  {String}             [note]     Time track's note or textual description
-   * @apiParam  {Number{0,24}}      duration   # of hours spent in this time track
+   * @apiParam  {Number{0,24}}      duration   number of hours spent in this time track
    * @apiParam  {Date}              date       Date(yyyy-mm-dd) for the time track
    *
    * @apiSuccess (Created 201) {String}  id         TimeTrack's id
@@ -147,7 +147,7 @@ router
 router
   .route('/:timeTrackId')
   /**
-   * @api {get} v1/users/:userId/timeTracks/:timeTrackId Get User
+   * @api {get} v1/users/:userId/timeTracks/:timeTrackId Get TimeTrack object
    * @apiDescription Get timeTrack's information
    * @apiVersion 1.0.0
    * @apiName GetTimeTrack
@@ -181,7 +181,7 @@ router
    * @apiHeader {String} Authorization  User's access token
    *
    * @apiParam  {String}             [note]     Time track's note or textual description
-   * @apiParam  {Number{0,24}}       duration   # of hours spent in this time track
+   * @apiParam  {Number{0,24}}       duration   number of hours spent in this time track
    * @apiParam  {Date}               date       Date(yyyy-mm-dd) for the time track
    *
    * @apiSuccess (Created 201) {String}  id         TimeTrack's id
