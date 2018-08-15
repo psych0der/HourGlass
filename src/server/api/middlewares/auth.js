@@ -5,6 +5,7 @@ const APIError = require('../utils/APIError');
 
 const SUPER_ADMIN = 'super-admin';
 const USER_MANAGER = 'user-manager';
+const USER = 'user';
 const LOGGED_USER = '_logged-user';
 
 const handleJWT = (req, res, next, roles, onlyUserOrAdmin) => async (
@@ -58,6 +59,7 @@ const handleJWT = (req, res, next, roles, onlyUserOrAdmin) => async (
 exports.SUPER_ADMIN = SUPER_ADMIN;
 exports.USER_MANAGER = USER_MANAGER;
 exports.LOGGED_USER = LOGGED_USER;
+exports.USER = USER;
 
 /**
  * Authorization middleware for requests
