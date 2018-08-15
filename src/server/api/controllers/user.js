@@ -60,32 +60,6 @@ exports.create = async (req, res, next) => {
 };
 
 /**
- * Currently not being used
- * @apiIgnore
- * Replace existing user
- * @public
- */
-exports.replace = async (req, res, next) => {
-  try {
-    const { user } = req;
-    const newUser = new User(req.body);
-    if (user.role !== SUPER_ADMIN && newUser.role === SUPER_ADMIN) {
-      throw new APIError({
-        message: 'You are not authorized to perform this operation',
-        status: httpStatus.FORBIDDEN,
-      });
-    }
-
-    await user.update(newUserObject, { override: true, upsert: true });
-    const savedUser = await User.findById(user._id);
-
-    res.json(savedUser.transform());
-  } catch (error) {
-    next(User.checkDuplicateEmail(error));
-  }
-};
-
-/**
  * Update existing user
  * @public
  */
