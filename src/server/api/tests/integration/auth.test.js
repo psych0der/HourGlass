@@ -1,10 +1,14 @@
 /* eslint-disable arrow-body-style */
+/* user bluebird promises */
+Promise = require('bluebird');
+
 const request = require('supertest');
 const httpStatus = require('http-status');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const moment = require('moment-timezone');
-const app = require('../../../index');
+const app = require('../../../config/express');
+const mongoose = require('../../../config/mongoose');
 const User = require('../../models/User');
 const { SUPER_ADMIN } = require('../../middlewares/auth');
 const RefreshToken = require('../../models/RefreshToken');
@@ -16,6 +20,16 @@ describe('Authentication API', () => {
   let user;
   let refreshToken;
   let expiredRefreshToken;
+
+  // setup
+  beforeAll(async () => {
+    mongoose.connect();
+  });
+
+  // teardown
+  afterAll(async () => {
+    mongoose.connection.close();
+  });
 
   beforeEach(async () => {
     dbUser = {
@@ -56,7 +70,9 @@ describe('Authentication API', () => {
     await RefreshToken.remove({});
   });
 
-  afterEach(() => sandbox.restore());
+  afterEach(async () => {
+    sandbox.restore();
+  });
 
   describe('POST /v1/auth/register', () => {
     it('should register a new user when request is ok', () => {

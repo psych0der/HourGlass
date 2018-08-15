@@ -1,12 +1,16 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-expressions */
+/* user bluebird promises */
+Promise = require('bluebird');
+
 const request = require('supertest');
 const httpStatus = require('http-status');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const bcrypt = require('bcryptjs');
 const { some, omitBy, isNil } = require('lodash');
-const app = require('../../../index');
+const app = require('../../../config/express');
+const mongoose = require('../../../config/mongoose');
 const User = require('../../models/User');
 const { SUPER_ADMIN, USER_MANAGER } = require('../../middlewares/auth');
 const JWT_EXPIRATION = require('../../../config/vars').jwtExpirationInterval;
@@ -39,6 +43,16 @@ describe('Users API', () => {
 
   const password = '123456';
   const passwordHashed = bcrypt.hashSync(password, 1);
+
+  // setup
+  beforeAll(async () => {
+    mongoose.connect();
+  });
+
+  // teardown
+  afterAll(async () => {
+    mongoose.connection.close();
+  });
 
   beforeEach(async () => {
     dbUsers = {
