@@ -47,31 +47,6 @@ module.exports = {
     },
   },
 
-  // PUT /v1/users/:userId
-  replaceUser: {
-    body: {
-      email: Joi.string()
-        .email()
-        .required(),
-      password: Joi.string()
-        .min(6)
-        .max(128)
-        .required(),
-      name: Joi.string()
-        .max(128)
-        .required(),
-      preferredWorkingHourPerDay: Joi.number()
-        .min(0)
-        .max(24),
-      role: Joi.string().valid(User.roles),
-    },
-    params: {
-      userId: Joi.string()
-        .regex(/^[a-fA-F0-9]{24}$/)
-        .required(),
-    },
-  },
-
   // PATCH /v1/users/:userId
   updateUser: {
     body: {
