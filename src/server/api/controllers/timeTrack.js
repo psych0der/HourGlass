@@ -28,25 +28,31 @@ exports.get = (req, res) => res.json(req.locals.timeTrack.transform());
  * @public
  */
 exports.create = async (req, res, next) => {
-  const reqBody = Object.assign(req.body, { userId: req.params.userId });
-  const timeTrack = new TimeTrack(reqBody);
-  const savedTimeTrack = await timeTrack.save();
-  res.status(httpStatus.CREATED);
-  res.json(savedTimeTrack.transform());
+  try {
+    const reqBody = Object.assign(req.body, { userId: req.params.userId });
+    const timeTrack = new TimeTrack(reqBody);
+    const savedTimeTrack = await timeTrack.save();
+    res.status(httpStatus.CREATED);
+    res.json(savedTimeTrack.transform());
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
  * Update existing user
  * @public
  */
-exports.update = (req, res, next) => {
-  const newTimeTrack = Object.assign(req.locals.timeTrack, req.body, {
-    userId: req.params.userId,
-  });
-
-  newTimeTrack
-    .save()
-    .then(saveTimeTrack => res.json(saveTimeTrack.transform()));
+exports.update = async (req, res, next) => {
+  try {
+    const newTimeTrack = Object.assign(req.locals.timeTrack, req.body, {
+      userId: req.params.userId,
+    });
+    const saveTimeTrack = await newTimeTrack.save();
+    return res.json(saveTimeTrack.transform());
+  } catch (error) {
+    return next(error);
+  }
 };
 
 /**
@@ -56,10 +62,9 @@ exports.update = (req, res, next) => {
 exports.list = async (req, res, next) => {
   /* Fetch timeTrack list and total timeTrack count for a particular user to add hasNext and hasPrev flags */
   try {
-    const [timeTracklist, count] = await TimeTrack.list(
+    const { timeTracklist, count } = await TimeTrack.list(
       Object.assign(req.query, { userId: req.params.userId })
     );
-
     const transformedTimeTracks = timeTracklist.map(timeTrack =>
       timeTrack.transform()
     );
@@ -80,7 +85,7 @@ exports.filterByDate = async (req, res, next) => {
     hasNext and hasPrev flags
   */
   try {
-    const [filteredTimeTracks, count] = await TimeTrack.filterByDate(
+    const { filteredTimeTracks, count } = await TimeTrack.filterByDate(
       Object.assign(req.query, { userId: req.params.userId })
     );
 
@@ -104,7 +109,7 @@ exports.search = async (req, res, next) => {
     user count to add hasNext and hasPrev flags
   */
   try {
-    const [searchResult, count] = await TimeTrack.search(
+    const { searchResult, count } = await TimeTrack.search(
       Object.assign(req.query, { userId: req.params.userId })
     );
     const transformedTimeTracks = searchResult.map(timeTrack =>
@@ -124,10 +129,13 @@ exports.search = async (req, res, next) => {
  * @public
  */
 exports.remove = (req, res, next) => {
-  const { timeTrack } = req.locals;
-
-  timeTrack
-    .remove()
-    .then(() => res.status(httpStatus.NO_CONTENT).end())
-    .catch(e => next(e));
+  try {
+    const { timeTrack } = req.locals;
+    timeTrack
+      .remove()
+      .then(() => res.status(httpStatus.NO_CONTENT).end())
+      .catch(e => next(e));
+  } catch (error) {
+    next(error);
+  }
 };
