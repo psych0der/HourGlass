@@ -37,6 +37,28 @@ const timeTrackSchema = new mongoose.Schema(
   }
 );
 
+/** add pre save hook to check total duration is not more than 24 hours
+ */
+timeTrackSchema.pre('save', async function save(next) {
+  try {
+    const { userId, date, duration } = this;
+    const aggregateObject = await this.constructor.aggregate([
+      { $match: { userId, date } },
+      { $group: { _id: null, total: { $sum: '$duration' } } },
+    ]);
+    const previousTotal = aggregateObject[0] || { total: 0 };
+    if ((previousTotal.total || 0) + duration > 24) {
+      throw new APIError({
+        message: 'You cannot track more than 24 hours in a day',
+        status: httpStatus.PRECONDITION_FAILED,
+      });
+    }
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
 /**
  * Methods
  */
@@ -79,7 +101,7 @@ timeTrackSchema.statics = {
         timeTrackObject = await this.findById(id).exec();
       }
       if (timeTrackObject) {
-        return timeTrackObject.transform();
+        return timeTrackObject;
       }
 
       throw new APIError({
