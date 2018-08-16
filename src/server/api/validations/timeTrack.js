@@ -1,5 +1,7 @@
-const Joi = require('joi');
-const User = require('../models/TimeTrack');
+const BaseJoi = require('joi');
+const Extension = require('joi-date-extensions');
+
+const Joi = BaseJoi.extend(Extension);
 
 module.exports = {
   // GET /v1/users/:userId/timeTracks/
