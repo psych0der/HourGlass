@@ -1,16 +1,28 @@
+// @flow
 import React from 'react';
 import { Route } from 'react-router-dom';
-import Home from '../Home';
+import Routes from '../../Routes';
+import { Link } from 'react-router-dom';
+import { Navbar } from 'react-bootstrap';
+import './index.css';
+// import Home from '../Home';
 
-export class App extends React.Component {
+type Props = {};
+type State = {};
+
+export class App extends React.Component<Props, State> {
   render() {
     return (
-      <div>
-        {' '}
-        {/* display Home at default path as of now */}{' '}
-        <main>
-          <Route exact path="/" component={Home} />{' '}
-        </main>{' '}
+      <div className="App container">
+        <Navbar collapseOnSelect>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/">HourGlass</Link>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+        </Navbar>
+        <Routes />
       </div>
     );
   }
