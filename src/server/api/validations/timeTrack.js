@@ -38,7 +38,9 @@ module.exports = {
         .max(100),
       sortBy: Joi.string().valid(['date', 'duration', 'createdAt']),
       sortOrder: Joi.number().only([1, -1]),
-      query: Joi.string().required(),
+      query: Joi.string()
+        .allow('')
+        .required(),
     },
   },
 
