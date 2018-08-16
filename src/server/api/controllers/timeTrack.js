@@ -1,4 +1,6 @@
 const httpStatus = require('http-status');
+const $ = require('cheerio');
+const moment = require('moment-timezone');
 const APIError = require('../utils/APIError');
 const TimeTrack = require('../models/TimeTrack.js');
 const { handler: errorHandler } = require('../middlewares/error');
@@ -95,6 +97,49 @@ exports.filterByDate = async (req, res, next) => {
     const hasNext = (req.query.page || 1) < count;
     const hasPrev = (req.query.page || 1) > 1;
     res.json({ timeTracks: transformedTimeTracks, hasNext, hasPrev });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get HTML report for tasks in a date range
+ * @public
+ */
+exports.generateReport = async (req, res, next) => {
+  // Fetch aggregate hours worked with notes in the date range
+  try {
+    const aggregateResult = await TimeTrack.aggregateWithinDateRange(
+      Object.assign(req.query, { userId: req.params.userId })
+    );
+
+    const htmlBlocks = $(
+      `<div><h1>Time report for: ${req.locals.user.name}</h1></div>`
+    );
+    if (aggregateResult.length > 0) {
+      aggregateResult.map(date => {
+        const formattedDate = moment(new Date(date._id.date)).format(
+          'YYYY-MM-DD'
+        );
+        const parent = $('<div class="date-group"></div>');
+        parent.append(`<div><b>Date</b>: ${formattedDate}</div>`);
+        parent.append(`<div><b>Duration</b>: ${date.total} hours</div>`);
+        const notesList = $('<ul class="notes"></ul>');
+        date.notes.forEach(note => {
+          notesList.append(`<li>${note}</li>`);
+        });
+
+        parent.append($('<div><b>Notes</b></div>').append(notesList));
+        htmlBlocks.append(parent);
+      });
+    } else {
+      htmlBlocks.append(
+        '<div class="no-time-tracked">No time tracked during this date range</div>'
+      );
+    }
+
+    res.set('Content-Type', 'text/html');
+    res.send(Buffer.from(htmlBlocks.html()));
   } catch (error) {
     next(error);
   }

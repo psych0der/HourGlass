@@ -196,6 +196,33 @@ timeTrackSchema.statics = {
   },
 
   /**
+   * Generate aggregate report for time tracks between date range
+   *
+   * @param {Date} startDate - start date of range
+   * @param {Date} endDate - end date for filter range
+   * @param {String} userId - userId of the timetracks
+   * @returns {Promise<Object>}
+   */
+  async aggregateWithinDateRange({ startDate, endDate, userId }) {
+    const result = await this.aggregate([
+      {
+        $match: {
+          date: { $gte: startDate, $lte: endDate },
+          userId: mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $group: {
+          _id: { date: '$date' },
+          total: { $sum: '$duration' },
+          notes: { $push: '$note' },
+        },
+      },
+    ]);
+    return result;
+  },
+
+  /**
    * Search timeTracks of a particular user specified by a query string matching note
    * and optionally sort using sortBy and sortOrder
    *

@@ -145,6 +145,32 @@ router
   );
 
 router
+  .route('/generate-report')
+  /**
+   * @api {get} v1/users/:userId/timeTracks/generate-report filter timeTracks in a date-range and generates report of consolidated result
+   * @apiDescription Filter timeTracks of the specified user between a date range
+   * @apiVersion 1.0.0
+   * @apiName GenerateConsolidatedTimeTrackReport
+   * @apiGroup TimeTrack
+   * @apiPermission super-admin, loggedUser
+   *
+   * @apiHeader {String} Authorization  Bearer followed by User's access token
+   *
+   * @apiParam  (Query string) {Date}             startDate      lower limit of date range(yyyy-mm-dd) for filtering timeTracks
+   * @apiParam  (Query string) {Date}             endDate        lower limit of date range(yyyy-mm-dd) for filtering timeTracks
+   *
+   * @apiSuccess {String} Consolidated report in HTML format
+   *
+   * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
+   * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
+   */
+  .get(
+    authorize([SUPER_ADMIN, USER], true),
+    validate(dateFilterTimeTracks),
+    controller.generateReport
+  );
+
+router
   .route('/:timeTrackId')
   /**
    * @api {get} v1/users/:userId/timeTracks/:timeTrackId Get TimeTrack object
