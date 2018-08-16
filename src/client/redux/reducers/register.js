@@ -41,7 +41,7 @@ export default (state: State = initialState, action) => {
       };
 
     default:
-      return initialState;
+      return state;
   }
 };
 
