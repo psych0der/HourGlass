@@ -105,7 +105,7 @@ timeTrackSchema.statics = {
       }
 
       throw new APIError({
-        message: 'timeTrackObject does not exist',
+        message: 'TimeTrack does not exist',
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
