@@ -1,15 +1,25 @@
 // @flow
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import queryString from 'query-string';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { login, logout } from '../../redux/reducers/auth';
+import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
 import './index.css';
 
-type Props = {};
+type Props = {
+  location: object,
+  auth: object,
+  login: () => *,
+  logout: () => *,
+};
 type State = {
   email: string,
   password: string,
 };
 
-export default class Login extends Component<Props, State> {
+export class Login extends Component<Props, State> {
   state = {
     email: '',
     password: '',
@@ -27,11 +37,35 @@ export default class Login extends Component<Props, State> {
 
   handleSubmit = (event: Event) => {
     event.preventDefault();
+    this.props.login({
+      email: this.state.email,
+      password: this.state.password,
+    });
   };
 
   render() {
+    const queryStrings = queryString.parse(this.props.location.search);
+    let message =
+      queryStrings.registerSuccess &&
+      queryStrings.registerSuccess === 'true' ? (
+        <div className="registerSuccess">
+          Congratulations! Your account was successfully registered. Login to
+          proceed
+        </div>
+      ) : null;
+
+    if (this.props.auth.status === FAILED) {
+      message = (
+        <div className="ErrorMessage">
+          Unable to Login. Following error occurred:
+          <div>{this.props.auth.error}</div>
+        </div>
+      );
+    }
+
     return (
       <div className="Login">
+        {message}
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
             <ControlLabel>Email</ControlLabel>
@@ -63,3 +97,20 @@ export default class Login extends Component<Props, State> {
     );
   }
 }
+
+const mapStateToProps = ({ auth }) => ({ auth });
+
+// connect redux to the container
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      login,
+      logout,
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
