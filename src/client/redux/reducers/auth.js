@@ -67,11 +67,11 @@ export const resetState = () => (dispatch: Dispatch) => {
   };
 };
 
-export const logout = () => (dispatch: Dispatch) => {
+export const logout = () => {
   localStorage.removeItem('user');
-  return dispatch({
+  return {
     type: AUTH_BLANK_STATE,
-  });
+  };
 };
 
 export const setCurrentUser = (userObj: object) => {

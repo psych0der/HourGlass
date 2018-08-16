@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Routes from '../../Routes';
-import { AUTH_BLANK_STATE } from '../../redux/reducers/auth';
+import { AUTH_BLANK_STATE, logout } from '../../redux/reducers/auth';
 import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
 import { Link } from 'react-router-dom';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
@@ -40,11 +40,7 @@ const SignupLink = userIsNotAuthenticated(() => (
 ));
 
 const LogoutLink = userIsAuthenticated(() => {
-  return (
-    <NavItem onClick={() => store.dispatch({ type: AUTH_BLANK_STATE })}>
-      Logout
-    </NavItem>
-  );
+  return <NavItem onClick={() => store.dispatch(logout())}>Logout</NavItem>;
 });
 type Props = {};
 type State = {};
