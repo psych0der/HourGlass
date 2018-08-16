@@ -7,6 +7,7 @@ const httpStatus = require('http-status');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const bcrypt = require('bcryptjs');
+const $ = require('cheerio');
 const { some, omitBy, isNil } = require('lodash');
 const app = require('../../../config/express');
 const mongoose = require('../../../config/mongoose');
@@ -363,6 +364,335 @@ describe('TimeTrack API', () => {
           expect(field[0]).to.be.equal('perPage');
           expect(location).to.be.equal('query');
           expect(messages).to.include('"perPage" must be a number');
+        });
+    });
+  });
+
+  describe('GET /v1/users/:userId/timeTracks/filter-by-date', () => {
+    /* Create time track entries for jonSnow */
+    beforeEach(async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+
+      await TimeTrack.insertMany([
+        { note: 'Hi there', date: '2018-08-09', duration: 12, userId },
+        { note: 'Hi again', date: '2018-08-10', duration: 7, userId },
+        { note: 'Is it you?', date: '2018-08-11', duration: 23, userId },
+      ]);
+    });
+    it('should filter timeTracks of a user if it is logged in itself', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.timeTracks).to.be.an('array');
+          expect(res.body.timeTracks).to.have.lengthOf(2);
+        });
+    });
+
+    it('should filter timeTracks of a user is user logged in has super-admin role', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${superAdminAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.timeTracks).to.be.an('array');
+          expect(res.body.timeTracks).to.have.lengthOf(2);
+        });
+    });
+
+    it('should report error when startDate and endDate are not provided', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({})
+        .expect(httpStatus.BAD_REQUEST)
+        .then(res => {
+          const { field } = res.body.errors[0];
+          const { location } = res.body.errors[0];
+          const { messages } = res.body.errors[0];
+          expect(field[0]).to.be.equal('endDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"endDate" is required');
+          return Promise.resolve(res);
+        })
+        .then(res => {
+          const { field } = res.body.errors[1];
+          const { location } = res.body.errors[1];
+          const { messages } = res.body.errors[1];
+          expect(field[0]).to.be.equal('startDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"startDate" is required');
+        });
+    });
+
+    it('should report error when startDate and endDate are not in proper date format', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({ startDate: '1aaa', endDate: 'qq11' })
+        .expect(httpStatus.BAD_REQUEST)
+        .then(res => {
+          const { field } = res.body.errors[0];
+          const { location } = res.body.errors[0];
+          const { messages } = res.body.errors[0];
+          expect(field[0]).to.be.equal('endDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include(
+            '"endDate" must be a number of milliseconds or valid date string'
+          );
+          return Promise.resolve(res);
+        })
+        .then(res => {
+          const { field } = res.body.errors[1];
+          const { location } = res.body.errors[1];
+          const { messages } = res.body.errors[1];
+          expect(field[0]).to.be.equal('startDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include(
+            '"startDate" must be a number of milliseconds or valid date string'
+          );
+        });
+    });
+
+    it('should not filter timeTracks of a user if the logged in user is user-manager', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userManagerAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.FORBIDDEN)
+        .then(res => {
+          expect(res.body).to.include({ message: 'Forbidden' });
+        });
+    });
+
+    it('should get all timeTracks with pagination', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({
+          startDate: '2018-08-09',
+          endDate: '2018-08-10',
+          page: 2,
+          perPage: 1,
+        })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.timeTracks).to.be.an('array');
+          expect(res.body.timeTracks).to.have.lengthOf(1);
+        });
+    });
+
+    it('should handle pagination overflow ', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({
+          startDate: '2018-08-09',
+          endDate: '2018-08-10',
+          page: 3,
+          perPage: 1,
+        })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.timeTracks).to.be.an('array');
+          expect(res.body.hasPrev).to.equal(true);
+          expect(res.body.hasNext).to.equal(false);
+          expect(res.body.timeTracks).to.have.lengthOf(0);
+        });
+    });
+
+    it("should report error when pagination's parameters are not a number", async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/filter-by-date`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({
+          page: '?',
+          perPage: 'whaat',
+          startDate: '2018-08-09',
+          endDate: '2018-08-10',
+        })
+        .expect(httpStatus.BAD_REQUEST)
+        .then(res => {
+          const { field } = res.body.errors[0];
+          const { location } = res.body.errors[0];
+          const { messages } = res.body.errors[0];
+          expect(field[0]).to.be.equal('page');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"page" must be a number');
+          return Promise.resolve(res);
+        })
+        .then(res => {
+          const { field } = res.body.errors[1];
+          const { location } = res.body.errors[1];
+          const { messages } = res.body.errors[1];
+          expect(field[0]).to.be.equal('perPage');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"perPage" must be a number');
+        });
+    });
+  });
+
+  describe('GET /v1/users/:userId/timeTracks/generate-report', () => {
+    /* Create time track entries for jonSnow */
+    beforeEach(async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+
+      await TimeTrack.insertMany([
+        { note: 'Hi there', date: '2018-08-09', duration: 12, userId },
+        { note: 'Hi again', date: '2018-08-10', duration: 7, userId },
+        { note: 'Is it you?', date: '2018-08-11', duration: 23, userId },
+      ]);
+    });
+    it('should generate report for  timeTrack between a date range of a user if it is logged in itself', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/generate-report`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.headers['content-type']).to.be.equal(
+            'text/html; charset=utf-8'
+          );
+          const resp = $(res.text);
+          const parent = $('<div></div>').append(resp);
+          expect(resp[0].tagName).to.equal('h1');
+          expect($(parent.find('.date-group')).length).to.equal(2);
+          expect($(parent.find('.notes')).length).to.equal(2);
+          expect($(parent.find('.notes')[0]).length).to.equal(1);
+        });
+    });
+
+    it('should generate report for  timeTrack between a date range of a user logged user has super-admin role', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/generate-report`)
+        .set('Authorization', `Bearer ${superAdminAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.OK)
+        .then(async res => {
+          expect(res.headers['content-type']).to.be.equal(
+            'text/html; charset=utf-8'
+          );
+          const resp = $(res.text);
+          const parent = $('<div></div>').append(resp);
+          expect(resp[0].tagName).to.equal('h1');
+          expect($(parent.find('.date-group')).length).to.equal(2);
+          expect($(parent.find('.notes')).length).to.equal(2);
+          expect($(parent.find('.notes')[0]).length).to.equal(1);
+        });
+    });
+
+    it('should report error when startDate and endDate are not provided', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/generate-report`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({})
+        .expect(httpStatus.BAD_REQUEST)
+        .then(res => {
+          const { field } = res.body.errors[0];
+          const { location } = res.body.errors[0];
+          const { messages } = res.body.errors[0];
+          expect(field[0]).to.be.equal('endDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"endDate" is required');
+          return Promise.resolve(res);
+        })
+        .then(res => {
+          const { field } = res.body.errors[1];
+          const { location } = res.body.errors[1];
+          const { messages } = res.body.errors[1];
+          expect(field[0]).to.be.equal('startDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include('"startDate" is required');
+        });
+    });
+
+    it('should report error when startDate and endDate are not in proper date format', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/generate-report`)
+        .set('Authorization', `Bearer ${userAccessToken}`)
+        .query({ startDate: '1aaa', endDate: 'qq11' })
+        .expect(httpStatus.BAD_REQUEST)
+        .then(res => {
+          const { field } = res.body.errors[0];
+          const { location } = res.body.errors[0];
+          const { messages } = res.body.errors[0];
+          expect(field[0]).to.be.equal('endDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include(
+            '"endDate" must be a number of milliseconds or valid date string'
+          );
+          return Promise.resolve(res);
+        })
+        .then(res => {
+          const { field } = res.body.errors[1];
+          const { location } = res.body.errors[1];
+          const { messages } = res.body.errors[1];
+          expect(field[0]).to.be.equal('startDate');
+          expect(location).to.be.equal('query');
+          expect(messages).to.include(
+            '"startDate" must be a number of milliseconds or valid date string'
+          );
+        });
+    });
+
+    it('should not generate report for  timeTrack between a date range of a user logged user has user-manager role', async () => {
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
+      }))._id;
+      return request(app)
+        .get(`/v1/users/${userId}/timeTracks/generate-report`)
+        .set('Authorization', `Bearer ${userManagerAccessToken}`)
+        .query({ startDate: '2018-08-09', endDate: '2018-08-10' })
+        .expect(httpStatus.FORBIDDEN)
+        .then(res => {
+          expect(res.body).to.include({ message: 'Forbidden' });
         });
     });
   });
