@@ -1,6 +1,14 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home, Login, Signup, Profile, EditProfile, Users } from './containers';
+import {
+  Home,
+  Login,
+  Signup,
+  Profile,
+  EditProfile,
+  Users,
+  UserProfile,
+} from './containers';
 
 import {
   userIsAuthenticatedRedir,
@@ -25,6 +33,11 @@ export default () => (
       path="/users"
       exact
       component={userIsSuperAdminOrUserManagerRedir(Users)}
+    />
+    <Route
+      path="/users/:userId"
+      exact
+      component={userIsSuperAdminOrUserManagerRedir(UserProfile)}
     />
     <Route
       path="/profile"

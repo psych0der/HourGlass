@@ -22,6 +22,8 @@ type Props = {
   userInfo: Object,
   userId: string,
   fetchUserInformation: () => *,
+  editLocation: string,
+  proxy: boolean,
 };
 type State = {};
 
@@ -30,12 +32,22 @@ export class UserBlock extends Component<Props, State> {
     this.props.fetchUserInformation(this.props.userId);
   }
 
+  static defaultProps = {
+    proxy: false,
+  };
+
   /* Re trigger request */
   retry = () => {
     this.props.fetchUserInformation(this.props.userId);
   };
   render() {
     const { userInfo } = this.props.userInfo;
+    const proxyNotification =
+      this.props.proxy === true ? (
+        <div className="ProxyNotification">
+          You are viewing someone else's profile
+        </div>
+      ) : null;
     let component = null;
     if (this.props.userInfo.status == IN_PROGRESS) {
       component = (
@@ -55,7 +67,7 @@ export class UserBlock extends Component<Props, State> {
           <div className="UserBlock">
             <PageHeader>
               <small>Profile page</small>
-              <LinkContainer to="/profile/edit">
+              <LinkContainer to={this.props.editLocation}>
                 <Button className="pull-right" bsStyle="warning">
                   Edit
                 </Button>
@@ -110,7 +122,12 @@ export class UserBlock extends Component<Props, State> {
       );
     }
 
-    return <div>{component}</div>;
+    return (
+      <div>
+        <div>{proxyNotification}</div>
+        <div>{component}</div>
+      </div>
+    );
   }
 }
 
