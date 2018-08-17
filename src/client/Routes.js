@@ -9,6 +9,7 @@ import {
   EditUserProfile,
   Users,
   UserProfile,
+  CreateUser,
 } from './containers';
 
 import {
@@ -31,9 +32,9 @@ export default () => (
     />
     <Route path="/home" exact component={userIsAuthenticatedRedir(Home)} />
     <Route
-      path="/users"
+      path="/new/user/"
       exact
-      component={userIsSuperAdminOrUserManagerRedir(Users)}
+      component={userIsSuperAdminOrUserManagerRedir(CreateUser)}
     />
     <Route
       path="/users/:userId/edit"
@@ -54,6 +55,11 @@ export default () => (
       path="/profile/edit"
       exact
       component={userIsAuthenticatedRedir(EditProfile)}
+    />
+    <Route
+      path="/users"
+      exact
+      component={userIsSuperAdminOrUserManagerRedir(Users)}
     />
     {/* Finally, catch all unmatched routes */}
     <Route component={NotFound} />

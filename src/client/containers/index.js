@@ -8,4 +8,5 @@ export { default as EditProfile } from './EditProfile';
 export { default as EditUserProfile } from './EditUserProfile';
 export { default as UserBlock } from './UserBlock';
 export { default as UserEditBlock } from './UserEditBlock';
+export { default as CreateUser } from './CreateUser';
 export { default as Users } from './Users';

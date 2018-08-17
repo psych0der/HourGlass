@@ -102,7 +102,7 @@ export class Users extends React.Component<Props, State> {
         <div>
           <PageHeader>
             <span>Users</span>
-            <LinkContainer to="/users/new">
+            <LinkContainer to="/new/user/">
               <Button bsStyle="warning" className="pull-right">
                 Create new User
               </Button>
