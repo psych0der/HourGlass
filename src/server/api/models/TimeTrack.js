@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 const httpStatus = require('http-status');
 const { omitBy, isNil, some } = require('lodash');
 const APIError = require('../utils/APIError');
@@ -277,6 +278,11 @@ timeTrackSchema.statics = {
 
 /* Add text index to note */
 timeTrackSchema.index({ note: 'text' });
+/* add unique constraint to user and date */
+timeTrackSchema.index({ date: 1, userId: 1 }, { unique: true });
+
+/* add unique constraint plugin */
+timeTrackSchema.plugin(uniqueValidator);
 
 /**
  * @typedef TimeTrack

@@ -37,6 +37,14 @@ exports.create = async (req, res, next) => {
     res.status(httpStatus.CREATED);
     res.json(savedTimeTrack.transform());
   } catch (error) {
+    if (error.message.indexOf('to be unique') > -1) {
+      return next(
+        new APIError({
+          message: 'You cannot create more than 1 entry for a single date',
+          status: httpStatus.PRECONDITION_FAILED,
+        })
+      );
+    }
     next(error);
   }
 };

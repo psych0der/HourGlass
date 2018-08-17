@@ -6493,7 +6493,11 @@ lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
 
-lodash.get@4.4.2, lodash.get@^4.4.2:
+lodash.foreach@^4.1.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
+
+lodash.get@4.4.2, lodash.get@^4.0.2, lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
@@ -6983,6 +6987,13 @@ mongodb@3.1.1:
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
+
+mongoose-unique-validator@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/mongoose-unique-validator/-/mongoose-unique-validator-2.0.1.tgz#34c64f097cb5e1c61f822116b0a5b07667e6de92"
+  dependencies:
+    lodash.foreach "^4.1.0"
+    lodash.get "^4.0.2"
 
 mongoose@^5.2.7:
   version "5.2.7"
