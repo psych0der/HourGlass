@@ -32,6 +32,12 @@ const ProfileLink = userIsAuthenticated(() => (
     <NavItem>Profile</NavItem>
   </LinkContainer>
 ));
+// profile
+const TimeTrackLinks = userIsAuthenticated(() => (
+  <LinkContainer to="/time-tracks">
+    <NavItem>Time tracks</NavItem>
+  </LinkContainer>
+));
 const HomeLink = userIsAuthenticated(() => (
   <LinkContainer to="/home">
     <NavItem>Home</NavItem>
@@ -58,6 +64,7 @@ export class App extends React.Component<Props, State> {
           <Nav>
             <HomeLink />
             <ProfileLink />
+            <TimeTrackLinks />
           </Nav>
           <Navbar.Collapse>
             <Nav pullRight>

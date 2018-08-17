@@ -285,7 +285,7 @@ export class UserEditBlock extends Component<Props, State> {
         payload['role'] = this.state.role.value;
         payload['email'] = this.state.email.value;
       }
-      this.props.editUser(payload);
+      this.props.editUser(payload, !this.props.proxy);
     }
   };
   render() {
@@ -416,8 +416,9 @@ export class UserEditBlock extends Component<Props, State> {
                     <FormControl
                       autoFocus
                       type="number"
-                      max={24}
-                      min={0}
+                      max={24.0}
+                      min={0.0}
+                      step={0.01}
                       value={preferredWorkingHours.value}
                       onChange={this.onPreferredWorkingHoursChange}
                     />

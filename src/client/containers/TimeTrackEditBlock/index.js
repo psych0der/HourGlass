@@ -327,8 +327,9 @@ export class TimeTrackEditBlock extends Component<Props, State> {
                   <FormControl
                     autoFocus
                     type="number"
-                    max={24}
-                    min={0}
+                    max={24.0}
+                    min={0.0}
+                    step={0.01}
                     value={duration.value}
                     onChange={this.onDurationChange}
                   />

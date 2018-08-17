@@ -6,7 +6,14 @@ import PaginatedTimeTracks from './index';
 it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(
-    <PaginatedTimeTracks history={{}} match={{}} location={{}} userId="12" />,
+    <PaginatedTimeTracks
+      listTimeTracks={{ status: 'IN_PROGRESS' }}
+      fetchTimeTrackList={() => {}}
+      history={{}}
+      match={{}}
+      location={{}}
+      userId="12"
+    />,
     div
   );
   ReactDOM.unmountComponentAtNode(div);

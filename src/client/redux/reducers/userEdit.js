@@ -6,6 +6,7 @@ import { getNetworkErrorHandler, getAuthToken } from '../../commons/helpers';
 import { push } from 'react-router-redux';
 import pickBy from 'lodash.pickby';
 import identity from 'lodash.identity';
+import { updateProfile } from './auth';
 
 export const USER_EDIT_IN_PROGRESS = 'HOURGLASS/USER_EDIT_IN_PROGRESS';
 export const RESET_USER_EDIT_STATE = 'HOURGLASS/RESET_USER_EDIT_STATE';
@@ -99,24 +100,28 @@ export const resetState = () => (dispatch: Dispatch) => {
  * @param {number} Preferred working hours
  * @param {string} role
  * @param {string} targetLocation
+ * @param {string} self signifies if the logged in user is getting updated
  */
-export const editUser = ({
-  userId,
-  email,
-  password,
-  name,
-  preferredWorkingHourPerDay,
-  role,
-  targetLocation,
-}: {
-  userId: string,
-  email: string,
-  password: ?string,
-  name: string,
-  preferredWorkingHourPerDay: ?number,
-  targetLocation: string,
-  role: ?string,
-}) => (dispatch: Dispatch) => {
+export const editUser = (
+  {
+    userId,
+    email,
+    password,
+    name,
+    preferredWorkingHourPerDay,
+    role,
+    targetLocation,
+  }: {
+    userId: string,
+    email: string,
+    password: ?string,
+    name: string,
+    preferredWorkingHourPerDay: ?number,
+    targetLocation: string,
+    role: ?string,
+  },
+  self: boolean = false
+) => (dispatch: Dispatch) => {
   const sanitized_data = pickBy(
     { email, password, name, role, preferredWorkingHourPerDay },
     identity
@@ -136,6 +141,9 @@ export const editUser = ({
         data: sanitized_data,
       })
         .then(() => {
+          if (self) {
+            updateProfile()(dispatch);
+          }
           dispatch(push(targetLocation + '?edit=successful'));
         })
         .catch(getNetworkErrorHandler(dispatch)),

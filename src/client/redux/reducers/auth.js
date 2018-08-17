@@ -2,23 +2,31 @@
 /* Reducer for use registration  */
 import axios from 'axios';
 import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
-import { getNetworkErrorHandler } from '../../commons/helpers';
+import { getNetworkErrorHandler, getAuthToken } from '../../commons/helpers';
 
 export const AUTH_IN_PROGRESS = 'HOURGLASS/AUTH_IN_PROGRESS';
 export const AUTH_BLANK_STATE = 'HOURGLASS/AUTH_BLANK_STATE';
 export const AUTH_SUCCESS = 'HOURGLASS/AUTH_SUCCESS';
 export const AUTH_FAILED = 'HOURGLASS/AUTH_FAILED';
 export const SET_USER = 'HOURGLASS/AUTH_SET_USER';
+export const UPDATE_PROFILE_IN_PROGRESS =
+  'HOURGLASS/UPDATE_PROFILE_IN_PROGRESS';
+export const UPDATE_PROFILE_SUCCESS = 'HOURGLASS/UPDATE_PROFILE_SUCCESS';
+export const UPDATE_PROFILE_FAILURE = 'HOURGLASS/UPDATE_PROFILE_FAILURE';
 
 const initialState = {
   status: IDLE,
   error: null,
   user: null,
+  updateProfileStatus: IDLE,
+  updateProfileError: null,
 };
 type State = {
   status: string,
-  error: object | null,
-  user: object | null,
+  error: Object | null,
+  user: Object | null,
+  updateProfileError: Object | null,
+  updateProfileStatus: string,
 };
 export default (state: State = initialState, action) => {
   switch (action.type) {
@@ -55,6 +63,30 @@ export default (state: State = initialState, action) => {
       };
     case AUTH_BLANK_STATE:
       return initialState;
+
+    case UPDATE_PROFILE_IN_PROGRESS:
+      return {
+        ...state,
+        updateProfileStatus: IN_PROGRESS,
+        updateProfileError: null,
+      };
+
+    case UPDATE_PROFILE_SUCCESS:
+      return {
+        ...state,
+        updateProfileStatus: SUCCESS,
+        updateProfileError: null,
+        user: {
+          ...state.user,
+          ...action.result,
+        },
+      };
+    case UPDATE_PROFILE_FAILURE:
+      return {
+        ...state,
+        updateProfileStatus: FAILED,
+        updateProfileError: action.error.toString(),
+      };
 
     default:
       return state;
@@ -114,6 +146,34 @@ export const login = ({
           const userObj = Object.assign(res.data.user, { ...jwt });
           localStorage.setItem('user', JSON.stringify(userObj));
           return userObj;
+        })
+        .catch(getNetworkErrorHandler(dispatch)),
+  });
+};
+
+/**
+ * Update profile of the logged in user
+ */
+export const updateProfile = () => (dispatch: Dispatch) => {
+  dispatch({
+    types: [
+      UPDATE_PROFILE_IN_PROGRESS,
+      UPDATE_PROFILE_SUCCESS,
+      UPDATE_PROFILE_FAILURE,
+    ],
+    promise: () =>
+      axios({
+        method: 'GET',
+        url: `http://${process.env.REACT_APP_API_HOST}:${
+          process.env.REACT_APP_API_PORT
+        }/v1/users/profile`,
+        headers: {
+          'content-type': 'application/json',
+          authorization: getAuthToken(),
+        },
+      })
+        .then(res => {
+          return res.data;
         })
         .catch(getNetworkErrorHandler(dispatch)),
   });
