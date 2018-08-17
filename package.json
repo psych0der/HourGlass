@@ -117,6 +117,7 @@
     "start-client": "node scripts/start.js",
     "build-client": "node scripts/build.js",
     "start-dev-server": "pm2-dev src/server/index.js",
+    "start-prod-server": "cross-env NODE_ENV=production pm2 start ./src/server/index.js",
     "docs": "apidoc -i src -o docs",
     "postdocs": "opn docs/index.html",
     "test": "cross-env NODE_ENV=test node scripts/test.js src/client/ --env=jsdom ",
