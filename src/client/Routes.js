@@ -14,6 +14,11 @@ import {
   MyTimeTracks,
   TimeTrackView,
   EditTimeTrack,
+  TimeTrackReport,
+  UserTimeTracks,
+  UserTimeTrackView,
+  EditUserTimeTrack,
+  CreateUserTimeTrack,
 } from './containers';
 
 import {
@@ -46,6 +51,11 @@ export default () => (
       component={userIsAuthenticatedRedir(CreateMyTimeTrack)}
     />
     <Route
+      path="/time-track-report/"
+      exact
+      component={userIsAuthenticatedRedir(TimeTrackReport)}
+    />
+    <Route
       path="/time-tracks/"
       exact
       component={userIsAuthenticatedRedir(MyTimeTracks)}
@@ -59,6 +69,26 @@ export default () => (
       path="/time-tracks/:timeTrackId/edit"
       exact
       component={userIsAuthenticatedRedir(EditTimeTrack)}
+    />
+    <Route
+      path="/users/:userId/new/time-track"
+      exact
+      component={userIsSuperAdminRedir(CreateUserTimeTrack)}
+    />
+    <Route
+      path="/users/:userId/time-tracks"
+      exact
+      component={userIsSuperAdminRedir(UserTimeTracks)}
+    />
+    <Route
+      path="/users/:userId/time-tracks/:timeTrackId"
+      exact
+      component={userIsSuperAdminRedir(UserTimeTrackView)}
+    />
+    <Route
+      path="/users/:userId/time-tracks/:timeTrackId/edit"
+      exact
+      component={userIsSuperAdminRedir(EditUserTimeTrack)}
     />
     <Route
       path="/users/:userId/edit"

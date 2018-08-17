@@ -173,7 +173,9 @@ export class TimeTrackCreator extends Component<Props, State> {
 
     return (
       <div className="TimeTrackCreator">
-        <PageHeader>Create new Time track</PageHeader>
+        <PageHeader>
+          Create new Time track{this.props.isAdmin ? `(as Admin)` : ''}
+        </PageHeader>
         {headerMessage}
         <form onSubmit={this.onSubmit}>
           <FormGroup

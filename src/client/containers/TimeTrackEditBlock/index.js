@@ -246,7 +246,9 @@ export class TimeTrackEditBlock extends Component<Props, State> {
             this.props.deleteTimeTrack(
               this.props.userId,
               this.props.timeTrackId,
-              '/time-tracks'
+              this.props.proxy
+                ? `/users/${this.props.userId}/time-tracks`
+                : '/time-tracks'
             )
           }
         />

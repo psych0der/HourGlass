@@ -1,7 +1,12 @@
 const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/timeTrack');
-const { authorize, SUPER_ADMIN, USER } = require('../../middlewares/auth');
+const {
+  authorize,
+  SUPER_ADMIN,
+  USER,
+  USER_MANAGER,
+} = require('../../middlewares/auth');
 const {
   listTimeTracks,
   dateFilterTimeTracks,
@@ -76,7 +81,7 @@ router
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
   .post(
-    authorize([SUPER_ADMIN, USER], true),
+    authorize([SUPER_ADMIN, USER_MANAGER, USER], true),
     validate(createTimeTrack),
     controller.create
   );
@@ -107,7 +112,7 @@ router
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
   .get(
-    authorize([SUPER_ADMIN, USER], true),
+    authorize([SUPER_ADMIN, USER_MANAGER, USER], true),
     validate(searchTimeTracks),
     controller.search
   );
@@ -165,7 +170,7 @@ router
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
   .get(
-    authorize([SUPER_ADMIN, USER], true),
+    authorize([SUPER_ADMIN, USER_MANAGER, USER], true),
     validate(dateFilterTimeTracks),
     controller.generateReport
   );
@@ -194,7 +199,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(authorize([SUPER_ADMIN, USER], true), controller.get)
+  .get(authorize([SUPER_ADMIN, USER_MANAGER, USER], true), controller.get)
 
   /**
    * @api {patch} v1/users/:userId/timeTracks/:timeTrackId Update TimeTrack
@@ -224,7 +229,7 @@ router
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
   .patch(
-    authorize([SUPER_ADMIN, USER], true),
+    authorize([SUPER_ADMIN, USER_MANAGER, USER], true),
     validate(updateTimeTrack),
     controller.update
   )
@@ -244,6 +249,9 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      User does not exist
    */
-  .delete(authorize([SUPER_ADMIN, USER], true), controller.remove);
+  .delete(
+    authorize([SUPER_ADMIN, USER_MANAGER, USER], true),
+    controller.remove
+  );
 
 module.exports = router;

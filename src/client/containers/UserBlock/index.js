@@ -10,6 +10,7 @@ import {
   Label,
   Button,
 } from 'react-bootstrap';
+import { userIsSuperAdmin } from '../../commons/authWrapper';
 import { LinkContainer } from 'react-router-bootstrap';
 import { LoaderButton } from '../../components';
 import { bindActionCreators } from 'redux';
@@ -62,6 +63,15 @@ export class UserBlock extends Component<Props, State> {
         />
       );
     } else if (this.props.userInfo.status == SUCCESS) {
+      const ManageTimeTrackButton = userIsSuperAdmin(() => (
+        <div>
+          <LinkContainer to={`/users/${this.props.userId}/time-tracks`}>
+            <Button className="pull-right" bsStyle="warning">
+              Manage time tracks for this user
+            </Button>
+          </LinkContainer>
+        </div>
+      ));
       component = (
         <div className="UserBlockContainer">
           <div className="UserBlock">
@@ -97,6 +107,7 @@ export class UserBlock extends Component<Props, State> {
                 </div>
               </FormGroup>
             </div>
+            <ManageTimeTrackButton />
           </div>
         </div>
       );

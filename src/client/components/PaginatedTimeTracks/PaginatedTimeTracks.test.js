@@ -13,6 +13,8 @@ it('renders without crashing', () => {
       match={{}}
       location={{}}
       userId="12"
+      userInfo={{ status: 'IDLE' }}
+      fetchUserInformation={() => {}}
     />,
     div
   );

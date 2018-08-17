@@ -137,21 +137,27 @@ exports.generateReport = async (req, res, next) => {
       `<div><h1>Time report for: ${req.locals.user.name}</h1></div>`
     );
     if (aggregateResult.length > 0) {
-      aggregateResult.map(date => {
-        const formattedDate = moment(new Date(date._id.date)).format(
-          'YYYY-MM-DD'
-        );
-        const parent = $('<div class="date-group"></div>');
-        parent.append(`<div><b>Date</b>: ${formattedDate}</div>`);
-        parent.append(`<div><b>Duration</b>: ${date.total} hours</div>`);
-        const notesList = $('<ul class="notes"></ul>');
-        date.notes.forEach(note => {
-          notesList.append(`<li>${note}</li>`);
-        });
-
-        parent.append($('<div><b>Notes</b></div>').append(notesList));
-        htmlBlocks.append(parent);
+      const formattedStartDate = moment(new Date(req.query.startDate)).format(
+        'YYYY-MM-DD'
+      );
+      const formattedEndDate = moment(new Date(req.query.endDate)).format(
+        'YYYY-MM-DD'
+      );
+      // aggregateResult.map(date => {
+      const parent = $('<div class="date-group"></div>');
+      parent.append(`<div><b>Start Date</b>: ${formattedStartDate}</div>`);
+      parent.append(`<div><b>End Date</b>: ${formattedEndDate}</div>`);
+      parent.append(
+        `<div><b>Duration</b>: ${aggregateResult[0].total} hours</div>`
+      );
+      const notesList = $('<ul class="notes"></ul>');
+      aggregateResult[0].notes.forEach(note => {
+        notesList.append(`<li>${note}</li>`);
       });
+
+      parent.append($('<div><b>Notes</b></div>').append(notesList));
+      htmlBlocks.append(parent);
+      // });
     } else {
       htmlBlocks.append(
         '<div class="no-time-tracked">No time tracked during this date range</div>'

@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 // import { fetchTimeTrackList } from '../../redux/reducers/listTimeTracks';
 import './index.css';
 type Props = {
-  userName: string,
+  userName: ?string,
   preferredWorkingHoursPerDay: ?number,
   listTimeTracks: object,
   userId: string,
@@ -36,6 +36,8 @@ type Props = {
   location: Object,
   match: object,
   creationLink: Object,
+  userInfo: ?Object,
+  fetchUserInformation: ?() => *,
 };
 type State = {};
 
@@ -45,8 +47,11 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
     sortOrder: -1,
     page: 1,
     query: '',
-    userName: 'Other',
+    userName: null,
     preferredWorkingHoursPerDay: null,
+    proxy: false,
+    userInfo: null,
+    fetchUserInformation: null,
   };
 
   /* Re trigger request */
@@ -65,6 +70,10 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
   /* trigger request to fetch user list */
   componentDidMount() {
     this.fetchAgain();
+    /* If we didn't get userName then load user's info in redux and use it from there */
+    if (!this.props.userName) {
+      this.props.fetchUserInformation(this.props.userId);
+    }
   }
 
   setPage = (page: number) => {
@@ -86,8 +95,7 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
       });
       const pageNumber = parseInt(queryStrings.page || this.props.page);
       const query = event.target.value;
-      const path = this.props.match.path;
-      console.log(path);
+      const path = this.props.location.pathname;
       this.props.history.push(`${path}?page=${pageNumber}&query=${query}`);
     }
   };
@@ -101,15 +109,17 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
       ignoreQueryPrefix: true,
     });
     const pageNumber = parseInt(queryStrings.page || this.props.page);
-    const userName = this.props.userName;
+    const userName = this.props.userName
+      ? this.props.userName
+      : this.props.userInfo.status == SUCCESS
+        ? this.props.userInfo.userInfo.name
+        : null;
     const userPreferredWorkingHoursPerDay = this.props
-      .preferredWorkingHoursPerDay;
-    let message =
-      queryStrings.delete && queryStrings.delete === 'successful' ? (
-        <div className="registerSuccess">
-          Time track was deleted succesfully
-        </div>
-      ) : null;
+      .preferredWorkingHoursPerDay
+      ? this.props.preferredWorkingHoursPerDay
+      : this.props.userInfo.status === SUCCESS
+        ? this.props.userInfo.userInfo.preferredWorkingHourPerDay
+        : null;
     const searchQuery = queryStrings.query || this.props.query;
     if (this.props.listTimeTracks.status == IN_PROGRESS) {
       component = (
@@ -161,7 +171,7 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
                     timeTrackData={timeTrack}
                     key={timeTrack.id}
                     preferredWorkingHoursPerDay={
-                      this.props.preferredWorkingHoursPerDay
+                      userPreferredWorkingHoursPerDay
                     }
                   />
                 </NavLink>
@@ -185,6 +195,13 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
                 Next
               </Pager.Item>
             </Pager>
+            <div style={{ textAlign: 'center' }}>
+              {!this.props.proxy && (
+                <LinkContainer to="/time-track-report">
+                  <Button bsStyle="success">Generate report</Button>
+                </LinkContainer>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -213,19 +230,4 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
   }
 }
 
-// const mapStateToProps = ({ listUsers }) => ({ listUsers });
-
-// // connect redux to the container
-// const mapDispatchToProps = dispatch =>
-//   bindActionCreators(
-//     {
-//       fetchUserList,
-//     },
-//     dispatch
-//   );
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(PaginatedTimeTracks);
 export default PaginatedTimeTracks;

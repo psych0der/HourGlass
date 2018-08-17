@@ -214,7 +214,7 @@ timeTrackSchema.statics = {
       },
       {
         $group: {
-          _id: { date: '$date' },
+          _id: null,
           total: { $sum: '$duration' },
           notes: { $push: '$note' },
         },

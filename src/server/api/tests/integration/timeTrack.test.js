@@ -594,8 +594,8 @@ describe('TimeTrack API', () => {
           const resp = $(res.text);
           const parent = $('<div></div>').append(resp);
           expect(resp[0].tagName).to.equal('h1');
-          expect($(parent.find('.date-group')).length).to.equal(2);
-          expect($(parent.find('.notes')).length).to.equal(2);
+          expect($(parent.find('.date-group')).length).to.equal(1);
+          expect($(parent.find('.notes')).length).to.equal(1);
           expect($(parent.find('.notes')[0]).length).to.equal(1);
         });
     });
@@ -616,8 +616,8 @@ describe('TimeTrack API', () => {
           const resp = $(res.text);
           const parent = $('<div></div>').append(resp);
           expect(resp[0].tagName).to.equal('h1');
-          expect($(parent.find('.date-group')).length).to.equal(2);
-          expect($(parent.find('.notes')).length).to.equal(2);
+          expect($(parent.find('.date-group')).length).to.equal(1);
+          expect($(parent.find('.notes')).length).to.equal(1);
           expect($(parent.find('.notes')[0]).length).to.equal(1);
         });
     });
