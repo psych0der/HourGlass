@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
-import queryString from 'query-string';
+import queryString from 'qs';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { login, logout } from '../../redux/reducers/auth';
@@ -44,7 +44,9 @@ export class Login extends Component<Props, State> {
   };
 
   render() {
-    const queryStrings = queryString.parse(this.props.location.search);
+    const queryStrings = queryString.parse(this.props.location.search, {
+      ignoreQueryPrefix: true,
+    });
     let message =
       queryStrings.registerSuccess &&
       queryStrings.registerSuccess === 'true' ? (

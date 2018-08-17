@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import UserBlock from '../UserBlock';
 import { connect } from 'react-redux';
-import queryString from 'query-string';
+import queryString from 'qs';
 
 // Wrapper around user block
 type Props = {
@@ -15,7 +15,9 @@ export class UserProfile extends Component<Props, State> {
   state = {};
 
   render() {
-    const queryStrings = queryString.parse(this.props.location.search);
+    const queryStrings = queryString.parse(this.props.location.search, {
+      ignoreQueryPrefix: true,
+    });
     const userId = this.props.match.params.userId;
     const message =
       queryStrings.edit && queryStrings.edit === 'successful' ? (

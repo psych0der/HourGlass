@@ -13,7 +13,7 @@ import {
   FormControl,
 } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import queryString from 'query-string';
+import queryString from 'qs';
 import { LinkContainer } from 'react-router-bootstrap';
 import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
 import { LoaderButton, UserRow } from '../../components';
@@ -43,7 +43,9 @@ export class Users extends React.Component<Props, State> {
 
   /* Re trigger request */
   fetchAgain = () => {
-    const queryStrings = queryString.parse(this.props.location.search);
+    const queryStrings = queryString.parse(this.props.location.search, {
+      ignoreQueryPrefix: true,
+    });
     this.props.fetchUserList({
       page: queryStrings.page || this.props.page,
       sortBy: queryStrings.sortBy || this.props.sortBy,
@@ -74,7 +76,9 @@ export class Users extends React.Component<Props, State> {
 
   render() {
     let component = null;
-    const queryStrings = queryString.parse(this.props.location.search);
+    const queryStrings = queryString.parse(this.props.location.search, {
+      ignoreQueryPrefix: true,
+    });
     const pageNumber = parseInt(queryStrings.page || this.props.page);
     let message =
       queryStrings.delete && queryStrings.delete === 'successful' ? (
