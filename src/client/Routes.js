@@ -12,6 +12,7 @@ import {
   CreateUser,
   CreateMyTimeTrack,
   MyTimeTracks,
+  TimeTrackView,
 } from './containers';
 
 import {
@@ -47,6 +48,11 @@ export default () => (
       path="/time-tracks/"
       exact
       component={userIsAuthenticatedRedir(MyTimeTracks)}
+    />
+    <Route
+      path="/time-tracks/:timeTrackId"
+      exact
+      component={userIsAuthenticatedRedir(TimeTrackView)}
     />
     <Route
       path="/users/:userId/edit"

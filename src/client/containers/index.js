@@ -12,3 +12,4 @@ export { default as CreateUser } from './CreateUser';
 export { default as CreateMyTimeTrack } from './CreateMyTimeTrack';
 export { default as Users } from './Users';
 export { default as MyTimeTracks } from './MyTimeTracks';
+export { default as TimeTrackView } from './TimeTrackView';

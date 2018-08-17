@@ -94,6 +94,9 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
 
   render() {
     let component = null;
+    const visitLinkPrefix = this.props.proxy
+      ? `/users/${this.props.userId}/time-tracks`
+      : `/time-tracks`;
     const queryStrings = queryString.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
@@ -153,9 +156,7 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
             </div>
             {this.props.listTimeTracks.timeTrackList.map(timeTrack => {
               return (
-                <NavLink
-                  to={`/users/${this.props.userId}/time-tracks/${timeTrack.id}`}
-                >
+                <NavLink to={`${visitLinkPrefix}/${timeTrack.id}`}>
                   <TimeTrackRow
                     timeTrackData={timeTrack}
                     key={timeTrack.id}
