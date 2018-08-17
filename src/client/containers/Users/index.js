@@ -59,8 +59,12 @@ export class Users extends React.Component<Props, State> {
   }
 
   setPage = (page: number) => {
+    const queryStrings = queryString.parse(this.props.location.search, {
+      ignoreQueryPrefix: true,
+    });
+    const searchQuery = queryStrings.query || this.props.query;
     this.setState({ page }, () =>
-      this.props.history.push(`/users?page=${page}`)
+      this.props.history.push(`/users?page=${page}&query=${searchQuery}`)
     );
   };
 
@@ -69,8 +73,12 @@ export class Users extends React.Component<Props, State> {
    */
   handleSearchKeyPress = (event: Event) => {
     if (event.key === 'Enter') {
+      const queryStrings = queryString.parse(this.props.location.search, {
+        ignoreQueryPrefix: true,
+      });
+      const pageNumber = parseInt(queryStrings.page || this.props.page);
       const query = event.target.value;
-      this.props.history.push(`/users?query=${query}`);
+      this.props.history.push(`/users?page=${pageNumber}&query=${query}`);
     }
   };
 
