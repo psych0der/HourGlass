@@ -6,6 +6,7 @@ import {
   Signup,
   Profile,
   EditProfile,
+  EditUserProfile,
   Users,
   UserProfile,
 } from './containers';
@@ -33,6 +34,11 @@ export default () => (
       path="/users"
       exact
       component={userIsSuperAdminOrUserManagerRedir(Users)}
+    />
+    <Route
+      path="/users/:userId/edit"
+      exact
+      component={userIsSuperAdminOrUserManagerRedir(EditUserProfile)}
     />
     <Route
       path="/users/:userId"

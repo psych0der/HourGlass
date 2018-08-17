@@ -7,21 +7,24 @@ import { connect } from 'react-redux';
 // Wrapper around user block
 type Props = {
   auth: object,
+  match: object,
 };
 type State = {};
 
-export class EditProfile extends Component<Props, State> {
+/* This container is used to edit other users' profiles */
+export class EditUserProfile extends Component<Props, State> {
   state = {};
 
   render() {
+    const userId = this.props.match.params.userId;
     return (
       <UserEditBlock
-        userId={this.props.auth.user.id}
-        postEditLocation="/profile"
-        proxy={false}
+        userId={userId}
+        proxy={true}
         isAdmin={
           ['user_manager', SUPER_ADMIN].indexOf(this.props.auth.user.role) > -1
         }
+        postEditLocation={`/users/${userId}`}
       />
     );
   }
@@ -29,4 +32,4 @@ export class EditProfile extends Component<Props, State> {
 
 const mapStateToProps = ({ auth }) => ({ auth });
 
-export default connect(mapStateToProps)(EditProfile);
+export default connect(mapStateToProps)(EditUserProfile);

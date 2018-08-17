@@ -25,6 +25,8 @@ type Props = {
   userId: string,
   fetchUserInformation: () => *,
   isAdmin: boolean,
+  proxy: boolean,
+  postEditLocation: string,
 };
 type State = {
   fetchedUserInfo: boolean,
@@ -49,6 +51,9 @@ type State = {
 };
 
 export class UserEditBlock extends Component<Props, State> {
+  static defaultProps = {
+    proxy: false,
+  };
   state = {
     fetchedUserInfo: false,
     email: { value: '', isValid: null, message: '' },
@@ -58,6 +63,7 @@ export class UserEditBlock extends Component<Props, State> {
     preferredWorkingHours: { value: null, isValid: null, message: '' },
     role: { value: '', isValid: null, message: '' },
   };
+
   componentDidMount() {
     this.props.fetchUserInformation(this.props.userId);
   }
@@ -270,7 +276,7 @@ export class UserEditBlock extends Component<Props, State> {
         password: this.state.password.value,
         name: this.state.name.value,
         preferredWorkingHourPerDay: this.state.preferredWorkingHours.value,
-        targetLocation: '/profile',
+        targetLocation: this.props.postEditLocation,
         userId: this.props.userId,
       };
       if (this.props.isAdmin) {
@@ -282,6 +288,12 @@ export class UserEditBlock extends Component<Props, State> {
   };
   render() {
     const { userInfo } = this.props.userInfo;
+    const proxyNotification =
+      this.props.proxy === true ? (
+        <div className="ProxyNotification">
+          You are editing someone else's profile
+        </div>
+      ) : null;
     const {
       error: userEditError,
       status: userEditStatus,
@@ -441,7 +453,12 @@ export class UserEditBlock extends Component<Props, State> {
       );
     }
 
-    return <div>{component}</div>;
+    return (
+      <div>
+        <div>{proxyNotification}</div>
+        <div>{component}</div>
+      </div>
+    );
   }
 }
 
