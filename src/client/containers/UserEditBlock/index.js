@@ -204,7 +204,7 @@ export class UserEditBlock extends Component<Props, State> {
     );
   };
   /**
-   * confirm password value change handler
+   * Preferred working hours value change handler
    * @memberof UserEdit
    */
   onPreferredWorkingHoursChange = (event: Event) => {
