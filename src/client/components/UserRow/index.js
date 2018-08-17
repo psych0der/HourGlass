@@ -10,7 +10,6 @@ export default ({
   userData: Object,
   onClick: () => *,
 }) => {
-  console.log(userData);
   return (
     <div className="userRow">
       <div className="userName">{userData.name}</div>

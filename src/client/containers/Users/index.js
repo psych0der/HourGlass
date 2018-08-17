@@ -5,7 +5,13 @@ import {
   userIsAuthenticated,
   userIsSuperAdminOrUserManager,
 } from '../../commons/authWrapper';
-import { Button, PageHeader, Pager } from 'react-bootstrap';
+import {
+  Button,
+  PageHeader,
+  Pager,
+  FormGroup,
+  FormControl,
+} from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import queryString from 'query-string';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -20,6 +26,7 @@ type Props = {
   fetchUserList: () => *,
   sortBy: string,
   sortOrder: -1 | 1,
+  query: string,
   page: number,
   history: Object,
   location: Object,
@@ -31,6 +38,7 @@ export class Users extends React.Component<Props, State> {
     sortBy: 'createdAt',
     sortOrder: -1,
     page: 1,
+    query: '',
   };
 
   /* Re trigger request */
@@ -40,6 +48,7 @@ export class Users extends React.Component<Props, State> {
       page: queryStrings.page || this.props.page,
       sortBy: queryStrings.sortBy || this.props.sortBy,
       sortOrder: queryStrings.sortOrder || this.props.sortOrder,
+      query: queryStrings.query || this.props.query,
     });
   };
   /* trigger request to fetch user list */
@@ -53,10 +62,21 @@ export class Users extends React.Component<Props, State> {
     );
   };
 
+  /**
+   * handles key press events on search bar
+   */
+  handleSearchKeyPress = (event: Event) => {
+    if (event.key === 'Enter') {
+      const query = event.target.value;
+      this.props.history.push(`/users?query=${query}`);
+    }
+  };
+
   render() {
     let component = null;
     const queryStrings = queryString.parse(this.props.location.search);
     const pageNumber = parseInt(queryStrings.page || this.props.page);
+    const searchQuery = queryStrings.query || this.props.query;
     if (this.props.listUsers.status == IN_PROGRESS) {
       component = (
         <LoaderButton
@@ -80,7 +100,20 @@ export class Users extends React.Component<Props, State> {
               </Button>
             </LinkContainer>
           </PageHeader>
-          <div className="pageCount">Page-{pageNumber}</div>
+          <div>
+            <div className="pageCount">Page-{pageNumber}</div>
+            <div style={{ display: 'inline-block' }} className="pull-right">
+              <FormGroup>
+                <FormControl
+                  type="text"
+                  placeholder="Search"
+                  defaultValue={searchQuery}
+                  onKeyPress={this.handleSearchKeyPress}
+                />
+              </FormGroup>
+            </div>
+          </div>
+
           <div className="userList">
             <div className="userListColumns">
               <div className="t-col">Name</div>

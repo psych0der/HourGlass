@@ -78,15 +78,18 @@ export const resetState = () => (dispatch: Dispatch) => {
  * @param {number} page
  * @param {string} sortBy
  * @param {number} sortOrder
+ * @param {string} search query
  */
 export const fetchUserList = ({
   page,
   sortBy,
   sortOrder,
+  query = '',
 }: {
   page: number,
   sortBy: string,
   sortOrder: number,
+  query: ?string,
 }) => (dispatch: Dispatch) => {
   dispatch({
     types: [LIST_USERS_IN_PROGRESS, LIST_USERS_SUCCESS, LIST_USERS_FAILED],
@@ -95,8 +98,8 @@ export const fetchUserList = ({
         method: 'GET',
         url: `http://${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
-        }/v1/users/`,
-        params: { page, sortBy, sortOrder, perPage: 5 },
+        }/v1/users/search`,
+        params: { page, sortBy, sortOrder, perPage: 5, query },
         headers: {
           'content-type': 'application/json',
           authorization: getAuthToken(),
