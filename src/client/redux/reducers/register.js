@@ -2,6 +2,7 @@
 /* Reducer for use registration  */
 import axios from 'axios';
 import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { getNetworkErrorHandler } from '../../commons/helpers';
 import { push } from 'react-router-redux';
 
 export const REGISTER_IN_PROGRESS = 'HOURGLASS/REGISTER_IN_PROGRESS';
@@ -90,9 +91,6 @@ export const registerUser = ({
         .then(() => {
           dispatch(push('/login?registerSuccess=true'));
         })
-        .catch(e => {
-          console.error(e);
-          throw new Error(JSON.stringify(e.response.data.errors));
-        }),
+        .catch(getNetworkErrorHandler(dispatch)),
   });
 };

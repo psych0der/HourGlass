@@ -2,7 +2,7 @@
 /* Reducer for use registration  */
 import axios from 'axios';
 import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
-import { push } from 'react-router-redux';
+import { getNetworkErrorHandler } from '../../commons/helpers';
 
 export const AUTH_IN_PROGRESS = 'HOURGLASS/AUTH_IN_PROGRESS';
 export const AUTH_BLANK_STATE = 'HOURGLASS/AUTH_BLANK_STATE';
@@ -115,10 +115,6 @@ export const login = ({
           localStorage.setItem('user', JSON.stringify(userObj));
           return userObj;
         })
-        .catch(e => {
-          throw new Error(
-            e.response.data.message || JSON.stringify(e.response.data.errors)
-          );
-        }),
+        .catch(getNetworkErrorHandler(dispatch)),
   });
 };
