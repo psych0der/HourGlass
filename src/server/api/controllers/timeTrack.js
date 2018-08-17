@@ -104,16 +104,18 @@ exports.filterByDate = async (req, res, next) => {
       Object.assign(req.query, { userId: req.params.userId })
     );
 
+    const pageCount = Math.ceil(count / (req.query.perPage || 30));
+
     const transformedTimeTracks = filteredTimeTracks.map(timeTrack =>
       timeTrack.transform()
     );
-    const hasNext = (req.query.page || 1) < count;
+    const hasNext = (req.query.page || 1) < pageCount;
     const hasPrev = (req.query.page || 1) > 1;
     res.json({
       timeTracks: transformedTimeTracks,
       hasNext,
       hasPrev,
-      pages: count,
+      pages: pageCount,
     });
   } catch (error) {
     next(error);
@@ -179,13 +181,15 @@ exports.search = async (req, res, next) => {
       timeTrack.transform()
     );
 
-    const hasNext = (req.query.page || 1) < count;
+    const pageCount = Math.ceil(count / (req.query.perPage || 30));
+
+    const hasNext = (req.query.page || 1) < pageCount;
     const hasPrev = (req.query.page || 1) > 1;
     res.json({
       timeTracks: transformedTimeTracks,
       hasNext,
       hasPrev,
-      pages: count,
+      pages: pageCount,
     });
   } catch (error) {
     next(error);

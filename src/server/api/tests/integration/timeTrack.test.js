@@ -194,7 +194,7 @@ describe('TimeTrack API', () => {
         });
     });
 
-    it('should report error when total duration for a date exceeds 24 hours', async () => {
+    it('should report error more than 1 entry is created for a date', async () => {
       const userManagerId = (await User.findOne({
         email: dbUsers.tyrionLanister.email,
       }))._id;
@@ -218,7 +218,7 @@ describe('TimeTrack API', () => {
         .expect(httpStatus.PRECONDITION_FAILED)
         .then(res => {
           expect(res.body.message).to.be.equal(
-            'You cannot track more than 24 hours in a day'
+            'You cannot create more than 1 entry for a single date'
           );
         });
     });
