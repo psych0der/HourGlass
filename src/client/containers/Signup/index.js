@@ -200,7 +200,7 @@ export class Signup extends Component<Props, State> {
         email: this.state.email.value,
         password: this.state.password.value,
         name: this.state.name.value,
-        preferredWorkingHours: this.state.preferredWorkingHours.value,
+        preferredWorkingHourPerDay: this.state.preferredWorkingHours.value,
       });
     }
   };

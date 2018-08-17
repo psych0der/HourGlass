@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home, Login, Signup, Profile } from './containers';
+import { Home, Login, Signup, Profile, EditProfile } from './containers';
 
 import {
   userIsAuthenticatedRedir,
@@ -23,6 +23,11 @@ export default () => (
       path="/profile"
       exact
       component={userIsAuthenticatedRedir(Profile)}
+    />
+    <Route
+      path="/profile/edit"
+      exact
+      component={userIsAuthenticatedRedir(EditProfile)}
     />
     {/* Finally, catch all unmatched routes */}
     <Route component={NotFound} />

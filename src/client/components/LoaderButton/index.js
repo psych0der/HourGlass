@@ -9,6 +9,7 @@ type Props = {
   loadingText: ?React.Node,
   className: string,
   disabled: boolean,
+  bsStyle: ?string,
 };
 
 export default ({
@@ -17,11 +18,13 @@ export default ({
   loadingText,
   className = '',
   disabled = false,
+  bsStyle = 'default',
   ...props
 }: Props) => (
   <Button
     className={`LoaderButton ${className}`}
     disabled={disabled || isLoading}
+    bsStyle={bsStyle}
     {...props}
   >
     {isLoading && <Glyphicon glyph="refresh" className="spinning" />}

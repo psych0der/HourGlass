@@ -81,7 +81,7 @@ export class UserBlock extends Component<Props, State> {
                   Preferred working hours
                 </ControlLabel>
                 <div className="UserBlockValue">
-                  {userInfo.preferredWorkingHours || 'Not set'}
+                  {userInfo.preferredWorkingHourPerDay || 'Not set'}
                 </div>
               </FormGroup>
             </div>
@@ -91,7 +91,7 @@ export class UserBlock extends Component<Props, State> {
     } else {
       /* show error notification */
       component = (
-        <div class="ErrorMessage">
+        <div className="ErrorMessage">
           <div>Unable to fetch user information</div>
           <div>{this.props.userInfo.error}</div>
           <div style={{ width: 100, margin: '0 auto', marginTop: '10px' }}>
