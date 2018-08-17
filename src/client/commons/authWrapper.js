@@ -2,7 +2,14 @@
  * This module defines common auth wrappers and redirects to ease auth management while visiting routes
  */
 
-import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from './constants';
+import {
+  IDLE,
+  IN_PROGRESS,
+  SUCCESS,
+  FAILED,
+  SUPER_ADMIN,
+  USER_MANAGER,
+} from './constants';
 import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper';
 
 import {
@@ -40,6 +47,27 @@ export const userIsNotAuthenticatedRedir = connectedReduxRedirect({
   redirectAction: routerActions.replace,
 });
 
+export const userIsSuperAdminRedir = connectedReduxRedirect({
+  redirectPath: '/home',
+  allowRedirectBack: false,
+  authenticatedSelector: state =>
+    state.auth.user !== null && state.auth.user.role == SUPER_ADMIN,
+  predicate: user => user.role == SUPER_ADMIN,
+  wrapperDisplayName: 'UserIsSuperAdmin',
+  redirectAction: routerActions.replace,
+});
+
+export const userIsSuperAdminOrUserManagerRedir = connectedReduxRedirect({
+  redirectPath: '/home',
+  allowRedirectBack: false,
+  authenticatedSelector: state =>
+    state.auth.user !== null &&
+    [SUPER_ADMIN, USER_MANAGER].indexOf(state.auth.user.role) > -1,
+  predicate: user => [SUPER_ADMIN, USER_MANAGER].indexOf(user.role) > -1,
+  wrapperDisplayName: 'UserIsSuperAdminOrUserManager',
+  redirectAction: routerActions.replace,
+});
+
 // Auth wrapper to determine auth state
 export const userIsAuthenticated = connectedAuthWrapper({
   authenticatedSelector: state => state.auth.user !== null,
@@ -52,4 +80,19 @@ export const userIsNotAuthenticated = connectedAuthWrapper({
   authenticatedSelector: state =>
     state.auth.user === null && state.auth.status !== IN_PROGRESS,
   wrapperDisplayName: 'UserIsNotAuthenticated',
+});
+
+export const userIsSuperAdmin = connectedAuthWrapper({
+  authenticatedSelector: state =>
+    state.auth.user !== null && state.auth.user.role == SUPER_ADMIN,
+  // A nice display name for this check
+  wrapperDisplayName: 'UserIsSuperAdmin',
+});
+
+export const userIsSuperAdminOrUserManager = connectedAuthWrapper({
+  authenticatedSelector: state =>
+    state.auth.user !== null &&
+    [SUPER_ADMIN, USER_MANAGER].indexOf(state.auth.user.role) > -1,
+  // A nice display name for this check
+  wrapperDisplayName: 'UserIsSuperAdminOrManager',
 });
