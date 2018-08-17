@@ -6,3 +6,4 @@ export { default as Profile } from './Profile';
 export { default as EditProfile } from './EditProfile';
 export { default as UserBlock } from './UserBlock';
 export { default as UserEditBlock } from './UserEditBlock';
+export { default as Users } from './Users';

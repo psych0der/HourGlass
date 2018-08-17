@@ -1,10 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home, Login, Signup, Profile, EditProfile } from './containers';
+import { Home, Login, Signup, Profile, EditProfile, Users } from './containers';
 
 import {
   userIsAuthenticatedRedir,
   userIsNotAuthenticatedRedir,
+  userIsSuperAdminOrUserManagerRedir,
+  userIsSuperAdminRedir,
 } from './commons/authWrapper';
 
 import { NotFound, Landing } from './components';
@@ -19,6 +21,11 @@ export default () => (
       component={userIsNotAuthenticatedRedir(Signup)}
     />
     <Route path="/home" exact component={userIsAuthenticatedRedir(Home)} />
+    <Route
+      path="/users"
+      exact
+      component={userIsSuperAdminOrUserManagerRedir(Users)}
+    />
     <Route
       path="/profile"
       exact
