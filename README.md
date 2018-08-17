@@ -5,20 +5,11 @@ Sample time management app using React.js and Node.js
 > This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app)
 > since it provides simple and battle-tested boilerplate with many goodies built in. However, this is an ejected version
 > as I wanted some features not available by default
+> For backend I have used NodeJS with MongoDB as data storage
 
 # Table of contents
 
-- [Table of contents](#table-of-contents)
-      - [Usage](#usage)
-      - [Modifications done on create-react-app boilerplate](#modifications-done-on-create-react-app-boilerplate)
-      - [Environment variables](#environment-variables)
-      - [Redux](#redux)
-      - [Using Redux DevTools](#using-redux-devtools)
-      - [Fetch](#fetch)
-      - [Storybook](#storybook)
-      - [Project structure](#project-structure)
-        - [Application source code](#application-source-code)
-        - [Configs](#configs)
+- [Table of contents](#table-of-contents) - [Usage](#usage) - [Modifications done on create-react-app boilerplate](#modifications-done-on-create-react-app-boilerplate) - [Environment variables](#environment-variables) - [Redux](#redux) - [Using Redux DevTools](#using-redux-devtools) - [Fetch](#fetch) - [Storybook](#storybook) - [Application source code](#application-source-code) - [Configs](#configs)
 
 ---
 
@@ -26,15 +17,16 @@ Sample time management app using React.js and Node.js
 
 **This project uses node version 8. It is advisable to use [nvm](https://github.com/creationix/nvm). Project root contains `.nvmrc` file.**
 
-> This project requires a working mock API server which can be found [here](https://github.com/resin-io/light-api). Details of the API,
-> namely HOST and PORT should be set in `.env`. Default values are already provided in `.env.sample`
-
 - Copy requirement file from .env.sample `cp .env.sample .env`
 - Install dependencies: `yarn install`
-- Start development server: `yarn run start`
-- Create a production build: `yarn run build`
-- Run Test cases: `yarn run test`
+- Start backend development server: `yarn run start-dev-server`
+- Start frontend development server: `yarn run start-client`
+- Create a production build frontend: `yarn run build-client`
+- Start backend server in production mode: `yarn run start-prod-server`
+- Run client Test cases: `yarn run test`
+- Run API Test cases: `yarn run test:integrations`
 - Start Storybook development server: `yarn run start-storybook`
+- Generate API docs: `yarn docs`
 - Build Storybook: `yarn run build-storybook`
 
 ---
@@ -101,72 +93,23 @@ The storybook configuration will load files with extension `.stories.js` inside 
 
 ---
 
-#### [Project structure](#project-structure)
-
-```
-resin-photon
-├── .storybook
-│   ├── config.js
-│   └── webpack.config.js
-├── config
-│   ├── env.js
-│   ├── paths.js
-│   ├── polyfills.js
-│   ├── webpack.config.dev.js
-│   ├── webpack.config.prod.js
-│   └── webpackDevServer.config.js
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   └── manifest.json
-├── scripts
-│   ├── build.js
-│   ├── start.js
-│   └── test.js
-├── src
-│   ├── components
-│   ├── containers
-│   │   ├── App
-│   │   │   ├── App.test.js
-│   │   │   └── index.js
-│   │   ├── Home
-│   │   │   ├── index.css
-│   │   │   ├── index.js
-│   │   │   └── index.scss
-│   │   └── index.js
-│   ├── redux
-│   │   ├── middlewares
-│   │   │   └── augmentorMiddleware.js
-│   │   ├── reducers
-│   │   │   ├── index.js
-│   │   │   └── sample.js
-│   │   └── store.js
-│   ├── index.css
-│   ├── index.js
-│   ├── index.scss
-│   └── registerServiceWorker.js
-├── .eslintrc
-├── .flowconfig
-├── .gitignore
-├── .nvmrc
-├── .prettierrc
-├── README.md
-├── package.json
-└── yarn.lock
-```
-
 ##### [Application source code](#aps)
 
 - All of the application source resides inside `src` directory.
 - All Redux related code is inside `src/redux`
   - Reducers should reside in `src/redux/reducers`
-- Containers/Stateful components should have a directory inside `src/containers`. Expose the default container using index.js file inside the folder
-- Dumb/fully controlled components should have a directory inside `src/components/`
+- Containers/Stateful components should have a directory inside `src/client/containers`. Expose the default container using index.js file inside the folder
+- Dumb/fully controlled components should have a directory inside `src/client/components/`
+- Server code resides in `src/server`
+  - Routes are defined in `src/server/api/routes`
+  - Models are defined in `src/server/api/models`
+  - Controllers are defined in `src/server/api/controllers`
+  - Validators are defined in `src/server/api/validators`
 - All the static assets used by components/containers should be contained inside their respective directories. This is done to isolate their assets and dependencies
 - Each component/container should contain their .story.js and .test.js files inside their directories
 
 ##### [Configs](#configs)
 
-ALl webpack related configs, and polyfills reside inside `config` directory
+All webpack related configs, and polyfills reside inside `config` directory
 
 ---
