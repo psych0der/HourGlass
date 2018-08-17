@@ -10,6 +10,7 @@ import {
   Users,
   UserProfile,
   CreateUser,
+  CreateMyTimeTrack,
 } from './containers';
 
 import {
@@ -35,6 +36,11 @@ export default () => (
       path="/new/user/"
       exact
       component={userIsSuperAdminOrUserManagerRedir(CreateUser)}
+    />
+    <Route
+      path="/new/time-track/"
+      exact
+      component={userIsAuthenticatedRedir(CreateMyTimeTrack)}
     />
     <Route
       path="/users/:userId/edit"

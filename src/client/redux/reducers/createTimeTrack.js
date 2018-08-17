@@ -7,10 +7,12 @@ import { push } from 'react-router-redux';
 import pickBy from 'lodash.pickby';
 import identity from 'lodash.identity';
 
-export const CREATE_USER_IN_PROGRESS = 'HOURGLASS/CREATE_USER_IN_PROGRESS';
-export const RESET_CREATE_USER_STATE = 'HOURGLASS/RESET_CREATE_USER_STATE';
-export const CREATE_USER_SUCCESS = 'HOURGLASS/CREATE_USER_SUCCESS';
-export const CREATE_USER_FAILED = 'HOURGLASS/CREATE_USER_FAILED';
+export const CREATE_TIME_TRACK_IN_PROGRESS =
+  'HOURGLASS/CREATE_TIME_TRACK_IN_PROGRESS';
+export const RESET_CREATE_TIME_TRACK_STATE =
+  'HOURGLASS/RESET_CREATE_TIME_TRACK_STATE';
+export const CREATE_TIME_TRACK_SUCCESS = 'HOURGLASS/CREATE_TIME_TRACK_SUCCESS';
+export const CREATE_TIME_TRACK_FAILED = 'HOURGLASS/CREATE_TIME_TRACK_FAILED';
 
 const initialState = {
   status: IDLE,
@@ -22,26 +24,29 @@ type State = {
 };
 export default (state: State = initialState, action) => {
   switch (action.type) {
-    case CREATE_USER_IN_PROGRESS:
+    case CREATE_TIME_TRACK_IN_PROGRESS:
       return {
         ...state,
         status: IN_PROGRESS,
         error: null,
       };
 
-    case CREATE_USER_SUCCESS:
+    case CREATE_TIME_TRACK_SUCCESS:
       return {
         ...state,
         status: SUCCESS,
         error: null,
       };
 
-    case CREATE_USER_FAILED:
+    case CREATE_TIME_TRACK_FAILED:
       return {
         ...state,
         status: FAILED,
         error: action.error.toString(),
       };
+
+    case RESET_CREATE_TIME_TRACK_STATE:
+      return initialState;
 
     default:
       return state;
@@ -50,50 +55,58 @@ export default (state: State = initialState, action) => {
 
 export const resetState = () => (dispatch: Dispatch) => {
   return {
-    type: RESET_CREATE_USER_STATE,
+    type: RESET_CREATE_TIME_TRACK_STATE,
   };
 };
 
 /**
  * Register user to system
- * @param {string} name
- * @param {string} email
- * @param {string} password
- * @param {number} Preferred working hours
+ * @param {string} userID
+ * @param {string} note
+ * @param {string} date
+ * @param {number} duration
+ * @param {boolean} redirectAbsolute
  */
-export const createUser = ({
-  email,
-  password,
-  name,
-  preferredWorkingHourPerDay,
-  role,
+export const createTimeTrack = ({
+  userId,
+  note,
+  date,
+  duration,
+  redirectAbsolute = false,
 }: {
-  email: string,
-  password: string,
-  name: string,
-  preferredWorkingHourPerDay: ?number,
-  role: ?String,
+  userId: string,
+  note: ?string,
+  duration: number,
+  date: string,
+  redirectAbsolute: boolean,
 }) => (dispatch: Dispatch) => {
-  const sanitized_data = pickBy(
-    { email, password, name, role, preferredWorkingHourPerDay },
-    identity
-  );
+  const sanitized_data = pickBy({ note, duration, date }, identity);
   dispatch({
-    types: [CREATE_USER_IN_PROGRESS, CREATE_USER_SUCCESS, CREATE_USER_FAILED],
+    types: [
+      CREATE_TIME_TRACK_IN_PROGRESS,
+      CREATE_TIME_TRACK_SUCCESS,
+      CREATE_TIME_TRACK_FAILED,
+    ],
     promise: () =>
       axios({
         method: 'POST',
         url: `http://${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
-        }/v1/users/`,
+        }/v1/users/${userId}/timeTracks`,
         headers: {
           'content-type': 'application/json',
           authorization: getAuthToken(),
         },
         data: sanitized_data,
       })
-        .then(res => {
-          dispatch(push(`/users/${res.data.id}?creation=success`));
+        .then(() => {
+          dispatch(
+            push(
+              redirectAbsolute
+                ? `/users/${userId}/time-tracks/?creation=success`
+                : `/time-tracks/?creation=success`
+            )
+          );
         })
         .catch(getNetworkErrorHandler(dispatch)),
   });

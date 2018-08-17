@@ -82,6 +82,7 @@
     "raf": "3.4.0",
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
+    "react-bootstrap-date-picker-react16": "^4.0.2",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.1",
     "react-flexbox-grid": "^2.1.2",

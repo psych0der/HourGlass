@@ -6,6 +6,7 @@ import userInfo from './userInfo';
 import userEdit from './userEdit';
 import listUsers from './listUsers';
 import createUser from './createUser';
+import createTimeTrack from './createTimeTrack';
 
 export default combineReducers({
   register,
@@ -14,4 +15,5 @@ export default combineReducers({
   userEdit,
   listUsers,
   createUser,
+  createTimeTrack,
 });
