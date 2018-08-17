@@ -118,14 +118,11 @@ exports.list = async (req, res, next) => {
 exports.search = async (req, res, next) => {
   /* Fetch user list using search query and total user count to add hasNext and hasPrev flags */
   try {
-    const [users, userCount] = await Promise.all([
-      User.search(req.query),
-      User.count(req.query),
-    ]);
+    const { searchResult, count } = await User.search(req.query);
 
-    const pageCount = Math.ceil(userCount / (req.query.perPage || 30));
+    const pageCount = Math.ceil(count / (req.query.perPage || 30));
 
-    const transformedUsers = users.map(user => user.transform());
+    const transformedUsers = searchResult.map(user => user.transform());
     const hasNext = (req.query.page || 1) < pageCount;
     const hasPrev = (req.query.page || 1) > 1;
     res.json({ users: transformedUsers, hasNext, hasPrev, pages: pageCount });

@@ -285,8 +285,7 @@ describe('Users API', () => {
           // before comparing it is necessary to convert String to Date
           res.body.users[0].createdAt = new Date(res.body.users[0].createdAt);
           const includesjonSnow = some(res.body.users, john);
-
-          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users');
+          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users', 'pages');
           expect(res.body.users).to.be.an('array');
           expect(res.body.users).to.have.lengthOf(1);
           expect(includesjonSnow).to.be.true;
@@ -307,7 +306,7 @@ describe('Users API', () => {
           res.body.users[0].createdAt = new Date(res.body.users[0].createdAt);
           const includesjonSnow = some(res.body.users, john);
 
-          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users');
+          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users', 'pages');
           expect(res.body.hasNext).to.be.equal(false);
           expect(res.body.users).to.be.an('array');
           expect(res.body.users).to.have.lengthOf(1);
@@ -426,7 +425,7 @@ describe('Users API', () => {
           res.body.users[0].createdAt = new Date(res.body.users[0].createdAt);
           const includesBranTargerian = some(res.body.users, branT);
 
-          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users');
+          expect(res.body).to.have.keys('hasNext', 'hasPrev', 'users', 'pages');
           expect(res.body.users).to.be.an('array');
           expect(res.body.users).to.have.lengthOf(1);
           expect(includesBranTargerian).to.be.true;

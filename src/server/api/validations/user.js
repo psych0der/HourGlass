@@ -23,7 +23,7 @@ module.exports = {
       perPage: Joi.number()
         .min(1)
         .max(100),
-      query: Joi.string(),
+      query: Joi.string().allow(''),
       sortBy: Joi.string().valid(['name', 'role', 'email', 'createdAt']),
       sortOrder: Joi.number().only([1, -1]),
     },

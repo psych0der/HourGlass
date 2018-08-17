@@ -215,23 +215,46 @@ userSchema.statics = {
    * @param {Number} sortOrder - Sort order
    * @returns {Promise<User[]>}
    */
-  search({
+  async search({
     page = 1,
     perPage = 30,
     sortBy = 'createdAt',
     sortOrder = 1,
     query,
   }) {
-    return this.find({
-      $or: [
-        { name: { $regex: query, $options: 'i' } },
-        { email: { $regex: query, $options: 'i' } },
-      ],
-    })
-      .sort({ [sortBy]: sortOrder })
-      .skip(perPage * (page - 1))
-      .limit(perPage)
-      .exec();
+    const [searchResult, count] = await Promise.all([
+      this.find({
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+        ],
+      })
+        .sort({ [sortBy]: sortOrder })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(),
+      this.find({
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+        ],
+      })
+        .count()
+        .exec(),
+    ]);
+
+    return { searchResult, count };
+
+    // return this.find({
+    //   $or: [
+    //     { name: { $regex: query, $options: 'i' } },
+    //     { email: { $regex: query, $options: 'i' } },
+    //   ],
+    // })
+    //   .sort({ [sortBy]: sortOrder })
+    //   .skip(perPage * (page - 1))
+    //   .limit(perPage)
+    //   .exec();
   },
 
   /**
