@@ -27,6 +27,17 @@ const SignupLink = userIsNotAuthenticated(() => (
   </LinkContainer>
 ));
 
+const ProfileLink = userIsAuthenticated(() => (
+  <LinkContainer to="/profile">
+    <NavItem>Profile</NavItem>
+  </LinkContainer>
+));
+const HomeLink = userIsAuthenticated(() => (
+  <LinkContainer to="/home">
+    <NavItem>Home</NavItem>
+  </LinkContainer>
+));
+
 const LogoutLink = userIsAuthenticated(() => {
   return <NavItem onClick={() => store.dispatch(logout())}>Logout</NavItem>;
 });
@@ -44,6 +55,10 @@ export class App extends React.Component<Props, State> {
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
+          <Nav>
+            <HomeLink />
+            <ProfileLink />
+          </Nav>
           <Navbar.Collapse>
             <Nav pullRight>
               <LoginLink />
