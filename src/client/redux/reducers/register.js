@@ -63,12 +63,12 @@ export const registerUser = ({
   email,
   password,
   name,
-  preferredWorkingHours,
+  preferredWorkingHourPerDay,
 }: {
   email: string,
   password: string,
   name: string,
-  preferredWorkingHours: ?number,
+  preferredWorkingHourPerDay: ?number,
 }) => (dispatch: Dispatch) => {
   dispatch({
     types: [REGISTER_IN_PROGRESS, REGISTER_SUCCESS, REGISTER_FAILED],
@@ -85,7 +85,7 @@ export const registerUser = ({
           email,
           name,
           password,
-          preferredWorkingHours,
+          preferredWorkingHourPerDay,
         },
       })
         .then(() => {

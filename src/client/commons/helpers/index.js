@@ -1,6 +1,9 @@
 // @flow
 /* Add helpers here */
 import { logout } from '../../redux/reducers/auth';
+import isEqual from 'lodash.isequal';
+import transform from 'lodash.transform';
+import isObject from 'lodash.isobject';
 
 // Network error handler for axios. Handles logout on jwt expiry
 export const getNetworkErrorHandler = (dispatch: Dispatch) => (
@@ -45,4 +48,27 @@ export const getAuthToken = () => {
   } else {
     throw new Error('No auth information found. Login again to continue');
   }
+};
+
+/**
+ * Deep diff between two object, using lodash
+ * @param  {Object} object Object compared
+ * @param  {Object} base   Object to compare with
+ * @return {Object}        Return a new object who represent the diff
+ */
+export const difference = (object: object, base: object) => {
+  if (object !== base) {
+    return true;
+  }
+  function changes(object, base) {
+    return transform(object, function(result, value, key) {
+      if (!isEqual(value, base[key])) {
+        result[key] =
+          isObject(value) && isObject(base[key])
+            ? changes(value, base[key])
+            : value;
+      }
+    });
+  }
+  return changes(object, base);
 };
