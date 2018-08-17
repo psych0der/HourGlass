@@ -23,6 +23,7 @@ type Props = {
   fetchTimeTrackList: () => *,
   history: Object,
   location: Object,
+  match: Object,
 };
 type State = {};
 

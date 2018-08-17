@@ -13,3 +13,5 @@ export { default as CreateMyTimeTrack } from './CreateMyTimeTrack';
 export { default as Users } from './Users';
 export { default as MyTimeTracks } from './MyTimeTracks';
 export { default as TimeTrackView } from './TimeTrackView';
+export { default as TimeTrackEditBlock } from './TimeTrackEditBlock';
+export { default as EditTimeTrack } from './EditTimeTrack';

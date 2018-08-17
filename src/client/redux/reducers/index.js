@@ -9,6 +9,7 @@ import listUsers from './listUsers';
 import listTimeTracks from './listTimeTracks';
 import createUser from './createUser';
 import createTimeTrack from './createTimeTrack';
+import timeTrackEdit from './timeTrackEdit';
 
 export default combineReducers({
   register,
@@ -20,4 +21,5 @@ export default combineReducers({
   createTimeTrack,
   listTimeTracks,
   timeTrackInfo,
+  timeTrackEdit,
 });
