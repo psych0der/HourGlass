@@ -15,8 +15,8 @@ import { LoaderButton } from '../../components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserInformation } from '../../redux/reducers/userInfo';
-import { editUser } from '../../redux/reducers/userEdit';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { editUser, deleteUser } from '../../redux/reducers/userEdit';
+import { IN_PROGRESS, SUCCESS, FAILED, IDLE } from '../../commons/constants';
 import './index.css';
 
 type Props = {
@@ -24,6 +24,8 @@ type Props = {
   userEdit: Object,
   userId: string,
   fetchUserInformation: () => *,
+  deleteUser: () => *,
+  editUser: () => *,
   isAdmin: boolean,
   proxy: boolean,
   postEditLocation: string,
@@ -294,6 +296,38 @@ export class UserEditBlock extends Component<Props, State> {
           You are editing someone else's profile
         </div>
       ) : null;
+
+    let deleteButton = null;
+    if (this.props.isAdmin) {
+      if (this.props.userEdit.deleteStatus === IN_PROGRESS) {
+        deleteButton = (
+          <LoaderButton
+            block
+            bsSize="large"
+            bsStyle="danger"
+            disabled={true}
+            type="submit"
+            isLoading={true}
+            text="Deleting user...."
+            loadingText="Deleting user..."
+          />
+        );
+      } else if (this.props.userEdit.deleteStatus === IDLE) {
+        deleteButton = (
+          <LoaderButton
+            block
+            bsSize="large"
+            bsStyle="danger"
+            disabled={false}
+            type="submit"
+            isLoading={false}
+            text="Delete user"
+            loadingText="Deleting user...."
+            onClick={() => this.props.deleteUser(this.props.userId, '/users')}
+          />
+        );
+      }
+    }
     const {
       error: userEditError,
       status: userEditStatus,
@@ -426,6 +460,7 @@ export class UserEditBlock extends Component<Props, State> {
                   text="update"
                   loadingText="Updating"
                 />
+                {deleteButton}
               </div>
             </form>
           </div>
@@ -476,6 +511,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       fetchUserInformation,
       editUser,
+      deleteUser,
     },
     dispatch
   );

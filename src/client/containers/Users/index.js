@@ -76,6 +76,10 @@ export class Users extends React.Component<Props, State> {
     let component = null;
     const queryStrings = queryString.parse(this.props.location.search);
     const pageNumber = parseInt(queryStrings.page || this.props.page);
+    let message =
+      queryStrings.delete && queryStrings.delete === 'successful' ? (
+        <div className="registerSuccess">User was deleted succesfully</div>
+      ) : null;
     const searchQuery = queryStrings.query || this.props.query;
     if (this.props.listUsers.status == IN_PROGRESS) {
       component = (
