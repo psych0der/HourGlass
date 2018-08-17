@@ -72,7 +72,12 @@ exports.list = async (req, res, next) => {
     );
     const hasNext = (req.query.page || 1) < count;
     const hasPrev = (req.query.page || 1) > 1;
-    res.json({ timeTracks: transformedTimeTracks, hasNext, hasPrev });
+    res.json({
+      timeTracks: transformedTimeTracks,
+      hasNext,
+      hasPrev,
+      pages: count,
+    });
   } catch (error) {
     next(error);
   }
@@ -96,7 +101,12 @@ exports.filterByDate = async (req, res, next) => {
     );
     const hasNext = (req.query.page || 1) < count;
     const hasPrev = (req.query.page || 1) > 1;
-    res.json({ timeTracks: transformedTimeTracks, hasNext, hasPrev });
+    res.json({
+      timeTracks: transformedTimeTracks,
+      hasNext,
+      hasPrev,
+      pages: count,
+    });
   } catch (error) {
     next(error);
   }
@@ -163,7 +173,12 @@ exports.search = async (req, res, next) => {
 
     const hasNext = (req.query.page || 1) < count;
     const hasPrev = (req.query.page || 1) > 1;
-    res.json({ timeTracks: transformedTimeTracks, hasNext, hasPrev });
+    res.json({
+      timeTracks: transformedTimeTracks,
+      hasNext,
+      hasPrev,
+      pages: count,
+    });
   } catch (error) {
     next(error);
   }

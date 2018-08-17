@@ -105,7 +105,7 @@ exports.list = async (req, res, next) => {
     const transformedUsers = users.map(user => user.transform());
     const hasNext = (req.query.page || 1) < pageCount;
     const hasPrev = (req.query.page || 1) > 1;
-    res.json({ users: transformedUsers, hasNext, hasPrev });
+    res.json({ users: transformedUsers, hasNext, hasPrev, pages: pageCount });
   } catch (error) {
     next(error);
   }
@@ -128,7 +128,7 @@ exports.search = async (req, res, next) => {
     const transformedUsers = users.map(user => user.transform());
     const hasNext = (req.query.page || 1) < pageCount;
     const hasPrev = (req.query.page || 1) > 1;
-    res.json({ users: transformedUsers, hasNext, hasPrev });
+    res.json({ users: transformedUsers, hasNext, hasPrev, pages: pageCount });
   } catch (error) {
     next(error);
   }
