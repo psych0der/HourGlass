@@ -9,7 +9,6 @@ export default ({
   preferredWorkingHoursPerDay = null,
 }: {
   timeTrackData: Object,
-  userData: Object,
   preferredWorkingHoursPerDay: ?number,
 }) => {
   let rowClass = '';
@@ -23,7 +22,7 @@ export default ({
   return (
     <div className={`TimeTrackRow ${rowClass}`}>
       <div className="TimeTrackDate">
-        {moment(timeTrackData.data).format('YYYY-MM-DD')}
+        {moment(timeTrackData.date).format('YYYY-MM-DD')}
       </div>
       <div className="TimeTrackDuration">
         <Label bsStyle="warning">{`${timeTrackData.duration}hours`}</Label>

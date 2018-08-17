@@ -360,7 +360,7 @@ export class UserCreator extends Component<Props, State> {
             bsSize="large"
             disabled={!this.canProceed()}
             type="submit"
-            isLoading={this.props.userCreationState.state === IN_PROGRESS}
+            isLoading={this.props.userCreationState.status === IN_PROGRESS}
             text={this.props.submitString}
             loadingText={this.props.loadingString}
           />
