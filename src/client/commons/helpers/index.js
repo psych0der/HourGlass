@@ -2,7 +2,7 @@
 /* Add helpers here */
 import { logout } from '../../redux/reducers/auth';
 
-/* Network error handler for axios. Handles logout on jwt expiry */
+// Network error handler for axios. Handles logout on jwt expiry
 export const getNetworkErrorHandler = (dispatch: Dispatch) => (
   error: object | Error
 ) => {
@@ -34,5 +34,15 @@ export const getNetworkErrorHandler = (dispatch: Dispatch) => (
     // Something happened in setting up the request that triggered an Error
     console.error('Error', error.message);
     throw new Error(error.message);
+  }
+};
+
+// utility to return auth token for current request
+export const getAuthToken = () => {
+  if (localStorage.user) {
+    const userObject = JSON.parse(localStorage.user);
+    return 'Bearer ' + userObject.accessToken;
+  } else {
+    throw new Error('No auth information found. Login again to continue');
   }
 };
