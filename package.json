@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@storybook/storybook-deployer": "^2.3.0",
     "apidoc": "^0.17.6",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
@@ -125,7 +126,8 @@
     "precommit": "pretty-quick --staged",
     "start-storybook": "npm-run-all -p watch-css storybook",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "deploy-storybook": "storybook-to-ghpages"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.8",
