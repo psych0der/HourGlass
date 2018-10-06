@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import styles from './index.css';
 type Props = {};
 
 const NavBar = (props: Props) => {
