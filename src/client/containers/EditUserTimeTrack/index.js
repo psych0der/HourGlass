@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import TimeTrackEditBlock from '../TimeTrackEditBlock';
-import { USER_MANGER, SUPER_ADMIN } from '../../commons/constants';
 
 // Wrapper around user block
 type Props = {

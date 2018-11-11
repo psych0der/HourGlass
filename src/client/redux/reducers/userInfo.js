@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { IDLE, IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
 import { getNetworkErrorHandler, getAuthToken } from '../../commons/helpers';
-import { push } from 'react-router-redux';
 
 export const USER_INFO_IN_PROGRESS = 'HOURGLASS/USER_INFO_IN_PROGRESS';
 export const RESET_USER_INFO_STATE = 'HOURGLASS/RESET_USER_INFO_STATE';

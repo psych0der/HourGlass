@@ -1,9 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import { ConnectedRouter } from 'connected-react-router';
-import { store, persistor, history } from './redux/store';
+import { store, history } from './redux/store';
 import { setCurrentUser } from './redux/reducers/auth';
 import { App } from './containers';
 import registerServiceWorker from './registerServiceWorker';

@@ -1,11 +1,6 @@
 // @flow
 import React from 'react';
 import {
-  userIsSuperAdmin,
-  userIsAuthenticated,
-  userIsSuperAdminOrUserManager,
-} from '../../commons/authWrapper';
-import {
   Button,
   PageHeader,
   Pager,
@@ -15,10 +10,8 @@ import {
 import { NavLink } from 'react-router-dom';
 import queryString from 'qs';
 import { LinkContainer } from 'react-router-bootstrap';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, SUCCESS } from '../../commons/constants';
 import { LoaderButton, TimeTrackRow } from '../../components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 // import { fetchTimeTrackList } from '../../redux/reducers/listTimeTracks';
 import './index.css';
 type Props = {
@@ -93,7 +86,7 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
       const queryStrings = queryString.parse(this.props.location.search, {
         ignoreQueryPrefix: true,
       });
-      const pageNumber = parseInt(queryStrings.page || this.props.page);
+      const pageNumber = parseInt(queryStrings.page || this.props.page, 10);
       const query = event.target.value;
       const path = this.props.location.pathname;
       this.props.history.push(`${path}?page=${pageNumber}&query=${query}`);
@@ -108,10 +101,10 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
     const queryStrings = queryString.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
-    const pageNumber = parseInt(queryStrings.page || this.props.page);
+    const pageNumber = parseInt(queryStrings.page || this.props.page, 10);
     const userName = this.props.userName
       ? this.props.userName
-      : this.props.userInfo.status == SUCCESS
+      : this.props.userInfo.status === SUCCESS
         ? this.props.userInfo.userInfo.name
         : null;
     const userPreferredWorkingHoursPerDay = this.props
@@ -121,7 +114,7 @@ export class PaginatedTimeTracks extends React.Component<Props, State> {
         ? this.props.userInfo.userInfo.preferredWorkingHourPerDay
         : null;
     const searchQuery = queryStrings.query || this.props.query;
-    if (this.props.listTimeTracks.status == IN_PROGRESS) {
+    if (this.props.listTimeTracks.status === IN_PROGRESS) {
       component = (
         <LoaderButton
           block

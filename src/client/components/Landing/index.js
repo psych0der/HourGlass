@@ -1,7 +1,5 @@
 // @flow
 import React from 'react';
-import { Navbar } from '../../components';
-import styles from './index.css';
 type Props = {};
 type State = {};
 

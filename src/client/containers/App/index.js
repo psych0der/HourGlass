@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Routes from '../../Routes';
-import { AUTH_BLANK_STATE, logout } from '../../redux/reducers/auth';
+import { logout } from '../../redux/reducers/auth';
 import {
   userIsAuthenticated,
   userIsNotAuthenticated,

@@ -5,7 +5,7 @@ import queryString from 'qs';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { login, logout } from '../../redux/reducers/auth';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { FAILED } from '../../commons/constants';
 import './index.css';
 
 type Props = {

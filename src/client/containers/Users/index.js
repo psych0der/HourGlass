@@ -1,10 +1,6 @@
 // @flow
 import React from 'react';
-import {
-  userIsSuperAdmin,
-  userIsAuthenticated,
-  userIsSuperAdminOrUserManager,
-} from '../../commons/authWrapper';
+
 import {
   Button,
   PageHeader,
@@ -15,7 +11,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import queryString from 'qs';
 import { LinkContainer } from 'react-router-bootstrap';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, SUCCESS } from '../../commons/constants';
 import { LoaderButton, UserRow } from '../../components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -76,7 +72,7 @@ export class Users extends React.Component<Props, State> {
       const queryStrings = queryString.parse(this.props.location.search, {
         ignoreQueryPrefix: true,
       });
-      const pageNumber = parseInt(queryStrings.page || this.props.page);
+      const pageNumber = parseInt(queryStrings.page || this.props.page, 10);
       const query = event.target.value;
       this.props.history.push(`/users?page=${pageNumber}&query=${query}`);
     }
@@ -87,13 +83,9 @@ export class Users extends React.Component<Props, State> {
     const queryStrings = queryString.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
-    const pageNumber = parseInt(queryStrings.page || this.props.page);
-    let message =
-      queryStrings.delete && queryStrings.delete === 'successful' ? (
-        <div className="registerSuccess">User was deleted succesfully</div>
-      ) : null;
+    const pageNumber = parseInt(queryStrings.page || this.props.page, 10);
     const searchQuery = queryStrings.query || this.props.query;
-    if (this.props.listUsers.status == IN_PROGRESS) {
+    if (this.props.listUsers.status === IN_PROGRESS) {
       component = (
         <LoaderButton
           block

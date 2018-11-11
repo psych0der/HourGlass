@@ -7,10 +7,7 @@ import {
   FormControl,
   ControlLabel,
   PageHeader,
-  Label,
-  Button,
 } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 import { LoaderButton } from '../../components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -72,7 +69,7 @@ export class UserEditBlock extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     //update internal state on prop change
-    if (!this.state.fetchedUserInfo && this.props.userInfo.status == SUCCESS) {
+    if (!this.state.fetchedUserInfo && this.props.userInfo.status === SUCCESS) {
       this.setState({
         fetchedUserInfo: true,
         email: {
@@ -289,7 +286,6 @@ export class UserEditBlock extends Component<Props, State> {
     }
   };
   render() {
-    const { userInfo } = this.props.userInfo;
     const proxyNotification =
       this.props.proxy === true ? (
         <div className="ProxyNotification">
@@ -328,10 +324,7 @@ export class UserEditBlock extends Component<Props, State> {
         );
       }
     }
-    const {
-      error: userEditError,
-      status: userEditStatus,
-    } = this.props.userEdit;
+    const { status: userEditStatus } = this.props.userEdit;
     const {
       email,
       password,
@@ -342,7 +335,7 @@ export class UserEditBlock extends Component<Props, State> {
     } = this.state;
     let component = null;
     const headerMessage =
-      userEditStatus == FAILED ? (
+      userEditStatus === FAILED ? (
         <div className="ErrorMessage">
           Unable to update user info. Following error occurred:
           <div>userEditError}</div>
@@ -361,7 +354,7 @@ export class UserEditBlock extends Component<Props, State> {
           loadingText="Loading user info..."
         />
       );
-    } else if (this.props.userInfo.status == SUCCESS) {
+    } else if (this.props.userInfo.status === SUCCESS) {
       component = (
         <div className="UserBlockContainer">
           <div className="UserBlock">

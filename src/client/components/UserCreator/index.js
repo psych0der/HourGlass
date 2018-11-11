@@ -8,7 +8,7 @@ import {
   ControlLabel,
 } from 'react-bootstrap';
 import { LoaderButton } from '../../components';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, FAILED } from '../../commons/constants';
 import './index.css';
 
 type Props = {
@@ -252,7 +252,7 @@ export class UserCreator extends Component<Props, State> {
     } = this.state;
 
     const headerMessage =
-      this.props.userCreationState.status == FAILED ? (
+      this.props.userCreationState.status === FAILED ? (
         <div className="ErrorMessage">
           Unable to create User. Following error occurred:
           <div>{this.props.userCreationState.error}</div>

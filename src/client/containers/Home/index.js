@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {
-  userIsSuperAdmin,
   userIsAuthenticated,
   userIsSuperAdminOrUserManager,
 } from '../../commons/authWrapper';

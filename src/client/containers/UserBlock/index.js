@@ -1,10 +1,7 @@
 // @flow
 import React, { Component } from 'react';
-import validator from 'validator';
 import {
-  HelpBlock,
   FormGroup,
-  FormControl,
   ControlLabel,
   PageHeader,
   Label,
@@ -16,7 +13,7 @@ import { LoaderButton } from '../../components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserInformation } from '../../redux/reducers/userInfo';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, SUCCESS } from '../../commons/constants';
 import './index.css';
 
 type Props = {
@@ -50,7 +47,7 @@ export class UserBlock extends Component<Props, State> {
         </div>
       ) : null;
     let component = null;
-    if (this.props.userInfo.status == IN_PROGRESS) {
+    if (this.props.userInfo.status === IN_PROGRESS) {
       component = (
         <LoaderButton
           block
@@ -62,7 +59,7 @@ export class UserBlock extends Component<Props, State> {
           loadingText="Loading user info..."
         />
       );
-    } else if (this.props.userInfo.status == SUCCESS) {
+    } else if (this.props.userInfo.status === SUCCESS) {
       const ManageTimeTrackButton = userIsSuperAdmin(() => (
         <div>
           <LinkContainer to={`/users/${this.props.userId}/time-tracks`}>

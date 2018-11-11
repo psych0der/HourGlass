@@ -3,16 +3,16 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import augmentorMiddleware from './middlewares/augmentorMiddleware';
 import createHistory from 'history/createBrowserHistory';
 import rootReducer from './reducers';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+import { persistStore } from 'redux-persist';
+// import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 
 export const history = createHistory();
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['navigation'],
-};
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+//   blacklist: ['navigation'],
+// };
 
 const initialState = {};
 const enhancers = [];
@@ -30,10 +30,12 @@ const composedEnhancers = compose(
   applyMiddleware(...middleware),
   ...enhancers
 );
-const persistedReducer = persistReducer(
-  persistConfig,
-  connectRouter(history)(rootReducer)
-);
+
+// we'll use it later
+// const persistedReducer = persistReducer(
+//   persistConfig,
+//   connectRouter(history)(rootReducer)
+// );
 
 export const store = createStore(
   //persistedReducer,

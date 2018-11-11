@@ -2,20 +2,10 @@
  * This module defines common auth wrappers and redirects to ease auth management while visiting routes
  */
 
-import {
-  IDLE,
-  IN_PROGRESS,
-  SUCCESS,
-  FAILED,
-  SUPER_ADMIN,
-  USER_MANAGER,
-} from './constants';
+import { IN_PROGRESS, SUPER_ADMIN, USER_MANAGER } from './constants';
 import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper';
 
-import {
-  connectedRouterRedirect,
-  connectedReduxRedirect,
-} from 'redux-auth-wrapper/history4/redirect';
+import { connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect';
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper';
 import { routerActions } from 'react-router-redux';
 
@@ -51,8 +41,8 @@ export const userIsSuperAdminRedir = connectedReduxRedirect({
   redirectPath: '/home',
   allowRedirectBack: false,
   authenticatedSelector: state =>
-    state.auth.user !== null && state.auth.user.role == SUPER_ADMIN,
-  predicate: user => user.role == SUPER_ADMIN,
+    state.auth.user !== null && state.auth.user.role === SUPER_ADMIN,
+  predicate: user => user.role === SUPER_ADMIN,
   wrapperDisplayName: 'UserIsSuperAdmin',
   redirectAction: routerActions.replace,
 });
@@ -84,7 +74,7 @@ export const userIsNotAuthenticated = connectedAuthWrapper({
 
 export const userIsSuperAdmin = connectedAuthWrapper({
   authenticatedSelector: state =>
-    state.auth.user !== null && state.auth.user.role == SUPER_ADMIN,
+    state.auth.user !== null && state.auth.user.role === SUPER_ADMIN,
   // A nice display name for this check
   wrapperDisplayName: 'UserIsSuperAdmin',
 });

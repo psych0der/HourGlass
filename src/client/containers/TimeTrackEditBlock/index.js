@@ -1,16 +1,12 @@
 // @flow
 import React, { Component } from 'react';
-import validator from 'validator';
 import {
   HelpBlock,
   FormGroup,
   FormControl,
   ControlLabel,
   PageHeader,
-  Label,
-  Button,
 } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 import { LoaderButton } from '../../components';
 import DatePicker from 'react-bootstrap-date-picker-react16';
 import moment from 'moment-timezone';
@@ -73,7 +69,7 @@ export class TimeTrackEditBlock extends Component<Props, State> {
     //update internal state on prop change
     if (
       !this.state.fetchedTimeTrackInfo &&
-      this.props.timeTrackInfo.status == SUCCESS
+      this.props.timeTrackInfo.status === SUCCESS
     ) {
       this.setState({
         fetchedTimeTrackInfo: true,
@@ -209,7 +205,6 @@ export class TimeTrackEditBlock extends Component<Props, State> {
     }
   };
   render() {
-    const { timeTrackInfo } = this.props.timeTrackInfo;
     const proxyNotification =
       this.props.proxy === true ? (
         <div className="ProxyNotification">
@@ -255,14 +250,11 @@ export class TimeTrackEditBlock extends Component<Props, State> {
       );
     }
 
-    const {
-      error: timeTrackEditError,
-      status: timeTrackEditStatus,
-    } = this.props.timeTrackEdit;
+    const { status: timeTrackEditStatus } = this.props.timeTrackEdit;
     const { note, date, duration } = this.state;
     let component = null;
     const headerMessage =
-      timeTrackEditStatus == FAILED ? (
+      timeTrackEditStatus === FAILED ? (
         <div className="ErrorMessage">
           Unable to update user info. Following error occurred:
           <div>timeTrackEditError}</div>
@@ -281,7 +273,7 @@ export class TimeTrackEditBlock extends Component<Props, State> {
           loadingText="Loading user info..."
         />
       );
-    } else if (this.props.timeTrackInfo.status == SUCCESS) {
+    } else if (this.props.timeTrackInfo.status === SUCCESS) {
       component = (
         <div className="TimeTrackBlockContainer">
           <div className="TimeTrackBlock">

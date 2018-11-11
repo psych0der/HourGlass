@@ -1,10 +1,7 @@
 // @flow
 import React, { Component } from 'react';
-import validator from 'validator';
 import {
-  HelpBlock,
   FormGroup,
-  FormControl,
   ControlLabel,
   PageHeader,
   Label,
@@ -15,7 +12,7 @@ import { LoaderButton } from '../../components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchTimeTrackInformation } from '../../redux/reducers/timeTrackInfo';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, SUCCESS } from '../../commons/constants';
 import moment from 'moment-timezone';
 import './index.css';
 

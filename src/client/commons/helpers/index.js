@@ -11,11 +11,11 @@ export const getNetworkErrorHandler = (dispatch: Dispatch) => (
 ) => {
   if (error.response) {
     /* check for jwt expiry */
-    if (error.response.status == 401) {
+    if (error.response.status === 401) {
       if (
         error.response.data &&
         error.response.data.message &&
-        error.response.data.message == 'jwt expired'
+        error.response.data.message === 'jwt expired'
       ) {
         /* trigger logout */
         dispatch(logout());
@@ -56,8 +56,8 @@ export const getAuthToken = () => {
  * @param  {Object} base   Object to compare with
  * @return {Object}        Return a new object who represent the diff
  */
-export const difference = (object: object, base: object) => {
-  if (object !== base) {
+export const difference = (target: object, base: object) => {
+  if (target !== base) {
     return true;
   }
   function changes(object, base) {
@@ -70,5 +70,5 @@ export const difference = (object: object, base: object) => {
       }
     });
   }
-  return changes(object, base);
+  return changes(target, base);
 };

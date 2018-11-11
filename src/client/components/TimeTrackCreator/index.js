@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import validator from 'validator';
 import {
   HelpBlock,
   FormGroup,
@@ -11,7 +10,7 @@ import {
 import { LoaderButton } from '../../components';
 import DatePicker from 'react-bootstrap-date-picker-react16';
 import moment from 'moment-timezone';
-import { IN_PROGRESS, SUCCESS, FAILED } from '../../commons/constants';
+import { IN_PROGRESS, FAILED } from '../../commons/constants';
 import './index.css';
 
 type Props = {
@@ -164,7 +163,7 @@ export class TimeTrackCreator extends Component<Props, State> {
     const { note, duration, date } = this.state;
 
     const headerMessage =
-      this.props.timeTrackCreationState.status == FAILED ? (
+      this.props.timeTrackCreationState.status === FAILED ? (
         <div className="ErrorMessage">
           Unable to create Time track. Following error occurred:
           <div>{this.props.timeTrackCreationState.error}</div>

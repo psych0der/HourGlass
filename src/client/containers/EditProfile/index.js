@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import UserEditBlock from '../UserEditBlock';
-import { USER_MANGER, SUPER_ADMIN } from '../../commons/constants';
+import { SUPER_ADMIN } from '../../commons/constants';
 import { connect } from 'react-redux';
 
 // Wrapper around user block
