@@ -17,6 +17,7 @@ module.exports = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$'],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
+    '\\.(css|less)$': 'identity-obj-proxy',
   },
   moduleFileExtensions: [
     'web.js',
