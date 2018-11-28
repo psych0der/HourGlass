@@ -2,8 +2,7 @@
   "extends": ["react-app", "prettier"],
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error",
-    "import/resolver": "webpack"
+    "prettier/prettier": "error"
   },
   "env": {
     "browser": true,
