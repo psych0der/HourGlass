@@ -11,8 +11,8 @@
 
 ---
 
-API docs: [https://psych0der.github.io/HourGlass/](https://psych0der.github.io/HourGlass)</br>
-Demo: [https://hourglass.surge.sh/](https://hourglass.surge.sh/)
+**API docs**: [https://psych0der.github.io/HourGlass/](https://psych0der.github.io/HourGlass)</br>
+**Demo**: [https://hourglass.surge.sh/](https://hourglass.surge.sh/)
 
 # Table of contents
 
