@@ -2,12 +2,17 @@
 
 [![Build Status](https://travis-ci.org/psych0der/HourGlass.svg?branch=master)](https://travis-ci.org/psych0der/HourGlass)
 
-Sample time management app using React.js and Node.js
+# Sample time management app using React.js and Node.js
 
 > This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app)
 > since it provides simple and battle-tested boilerplate with many goodies built in. However, this is an ejected version
 > as I wanted some features not available by default
 > For backend I have used NodeJS with MongoDB as data storage
+
+---
+
+API docs: [https://psych0der.github.io/HourGlass/](https://psych0der.github.io/HourGlass)</br>
+Demo: [https://hourglass.surge.sh/](https://hourglass.surge.sh/)
 
 # Table of contents
 
