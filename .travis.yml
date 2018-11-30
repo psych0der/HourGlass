@@ -12,4 +12,16 @@ script:
   - yarn build-client
   - build-storybook
   - yarn docs
-  - yarn deploy-storybook
+
+# deploy:
+#   provider: pages
+#   local-dir:
+#   skip-cleanup: true
+#   github-token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
+#   keep-history: true
+#   on:
+#     branch: master
+deploy:
+  provider: heroku
+  api_key:
+    secure: 'NI/3ZCSOR0SSx5vuqKajtQFk5RNhSkIAmldb8w1G4T8ulaNkn2KKLntzav8lVwUv4qCEiWm1wU0PoabriGb79fDeB0eVq9duDVDguVfHSYchn9jEh1RinaxjvhbcX7DAqaAdzcqlXHQsbBhUictIHIDm5UjOvdtFrzRlkf/SEE5DhEhDDFoxK5jlMCjUKaYTLeoUR+re7OVOWKTB9GTHAnGTyWz63f41BEzu1hjH9RAswepOdEJN9kzKD6M59LmQVhmbG5r/10hpzdj5vdgELbNwXUOULtA/RURZRf6ZyIIH1CIqGuKAREYFLKCTV0mHgATT2fADnv0DB5+TeEiJ49SwaA1J/Rhutqim1hShzZGDiQ4ooeIxdgQnaPi+ghpL1FRyPhBe2XVvZqFZeALybyC68hoKqQ8b2gUcLFvE6YZ0YXu17nD3+5EEe9cLIlKT40LkjErV+lhW8ci11vweiPyu9CUEus6p7Yv1C56F48h/lsofpXaZaWhvD/eOIHZg0h6xlb96eWb6zkxSDzacA8UIpkUpmwLqqo+o3tMsjkN9kSste5PC82p4PDV8kJBjmwTlkw8ZtSZrlRv1nI1ufimIMbCPkgHcNpgpVMCk2HIP3WHCOFdBHU67xQleO8hM9+ya/tA6m2K/JafQqm6MPfYJjGHnTQC6F9Qlrsfmla4='
