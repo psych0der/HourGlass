@@ -106,8 +106,8 @@ describe('TimeTrack API', () => {
     });
 
     it('should not create a new timeTrack for some user when logged user is user-manager', async () => {
-      const userManagerId = (await User.findOne({
-        email: dbUsers.tyrionLanister.email,
+      const userId = (await User.findOne({
+        email: dbUsers.jonSnow.email,
       }))._id;
       const timeTrack = {
         note: 'sample',
@@ -115,7 +115,7 @@ describe('TimeTrack API', () => {
         duration: 2,
       };
       return request(app)
-        .post(`/v1/users/${userManagerId}/timeTracks/`)
+        .post(`/v1/users/${userId}/timeTracks/`)
         .set('Authorization', `Bearer ${userManagerAccessToken}`)
         .send(timeTrack)
         .expect(httpStatus.FORBIDDEN)
