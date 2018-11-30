@@ -1,1 +1,1 @@
-web: yarn heroku-prod-start
+web: yarn heroku-start-prod
