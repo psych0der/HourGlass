@@ -1,5 +1,7 @@
 ## HourGlass
 
+[![Build Status](https://travis-ci.org/psych0der/HourGlass.svg?branch=master)](https://travis-ci.org/psych0der/HourGlass)
+
 Sample time management app using React.js and Node.js
 
 > This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app)
