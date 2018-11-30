@@ -1,0 +1,25 @@
+.userListColumns {
+  border-bottom: thin solid #444;
+  padding-bottom: 10px;
+}
+
+.pageCount {
+  font-size: 18px;
+  display: inline-block;
+}
+
+.userListColumns div {
+  width: 40%;
+  position: relative;
+  display: inline-block;
+  margin: 0px 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media all and (min-width: 480px) {
+  .userList {
+    margin: 0 auto;
+    max-width: 480px;
+  }
+}

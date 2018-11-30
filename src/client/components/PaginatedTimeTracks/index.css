@@ -1,0 +1,39 @@
+.userListColumns {
+  border-bottom: thin solid #444;
+  padding-bottom: 10px;
+}
+
+.timeTrackList {
+  margin-top: 30px;
+}
+
+.pageCount {
+  font-size: 18px;
+  display: inline-block;
+}
+
+.timeTrackColumns div {
+  width: 30%;
+  position: relative;
+  display: inline-block;
+  margin: 0px 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media all and (min-width: 480px) {
+  .TimeTrackList {
+    margin: 0 auto;
+    max-width: 480px;
+  }
+}
+
+.DateFilters {
+  margin-top: 20px;
+}
+
+.filterComponent {
+  display: inline-block;
+  width: 30%;
+  margin: 0 10px;
+}

@@ -1,0 +1,25 @@
+.UserBlockLabel {
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.UserBlockValue {
+  font-size: 18px;
+}
+
+@media all and (min-width: 480px) {
+  .UserBlockContainer {
+    padding: 60px 0;
+  }
+  .UserBlock {
+    margin: 0 auto;
+    max-width: 320px;
+    padding: 10px;
+  }
+}
+
+.ErrorMessage {
+  color: #d9504c;
+  font-size: 14px;
+  text-align: center;
+}

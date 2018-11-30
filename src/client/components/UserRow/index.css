@@ -1,0 +1,19 @@
+.userRow {
+  margin: 5px 0px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 10px;
+  border-bottom: thin solid #ddd;
+}
+
+.userRow div {
+  width: 40%;
+  position: relative;
+  display: inline-block;
+  margin: 0px 5px;
+}
+
+.userRole {
+  padding-left: 20%;
+}

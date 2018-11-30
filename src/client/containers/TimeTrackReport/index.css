@@ -1,0 +1,14 @@
+@media all and (min-width: 480px) {
+  .ReportGenerator {
+    margin: 0 auto;
+    max-width: 480px;
+  }
+}
+
+.date-pickers div {
+  /* display: inline-block; */
+}
+
+.generteReportButton {
+  text-align: center;
+}

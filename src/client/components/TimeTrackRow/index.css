@@ -1,0 +1,32 @@
+.TimeTrackRow {
+  margin: 5px 0px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 10px;
+  border-bottom: thin solid #ddd;
+}
+
+.TimeTrackRow div {
+  width: 30%;
+  position: relative;
+  display: inline-block;
+  margin: 0px 5px;
+}
+
+.timeTrackSuccess {
+  background-color: green;
+  color: #fff;
+}
+
+.timeTrackFailure {
+  background-color: #b23c24;
+  color: #fff;
+}
+
+.timeTrackNote {
+  text-overflow: ellipsis;
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
