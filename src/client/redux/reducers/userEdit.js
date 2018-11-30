@@ -131,7 +131,7 @@ export const editUser = (
     promise: () =>
       axios({
         method: 'PATCH',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}`,
         headers: {
@@ -158,7 +158,7 @@ export const deleteUser = (userId: string, targetLocation: string) => (
     promise: () =>
       axios({
         method: 'DELETE',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}`,
         headers: {

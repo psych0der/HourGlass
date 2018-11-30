@@ -92,7 +92,7 @@ export class TimeTrackReport extends React.Component<Props, State> {
     this.setState({ loadingReport: true });
     axios({
       method: 'GET',
-      url: `http://${process.env.REACT_APP_API_HOST}:${
+      url: `${process.env.REACT_APP_API_HOST}:${
         process.env.REACT_APP_API_PORT
       }/v1/users/${
         this.props.auth.user.id

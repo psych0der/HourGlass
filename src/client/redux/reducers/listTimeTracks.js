@@ -103,7 +103,7 @@ export const fetchTimeTrackList = ({
     promise: () =>
       axios({
         method: 'GET',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}/timeTracks/search`,
         params: { page, sortBy: 'date', sortOrder, perPage: 5, query },

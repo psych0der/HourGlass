@@ -95,7 +95,7 @@ export const fetchUserList = ({
     promise: () =>
       axios({
         method: 'GET',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/search`,
         params: { page, sortBy, sortOrder, perPage: 5, query },

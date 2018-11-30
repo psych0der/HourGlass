@@ -129,7 +129,7 @@ export const editTimeTrack = ({
     promise: () =>
       axios({
         method: 'PATCH',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}/timeTracks/${timeTrackId}/`,
         headers: {
@@ -159,7 +159,7 @@ export const deleteTimeTrack = (
     promise: () =>
       axios({
         method: 'DELETE',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}/timeTracks/${timeTrackId}`,
         headers: {

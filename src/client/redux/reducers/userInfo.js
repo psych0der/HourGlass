@@ -68,7 +68,7 @@ export const fetchUserInformation = (userId: string) => (
     promise: () =>
       axios({
         method: 'GET',
-        url: `http://${process.env.REACT_APP_API_HOST}:${
+        url: `${process.env.REACT_APP_API_HOST}:${
           process.env.REACT_APP_API_PORT
         }/v1/users/${userId}`,
         headers: {
