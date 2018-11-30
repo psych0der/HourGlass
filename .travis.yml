@@ -13,14 +13,6 @@ script:
   - build-storybook
   - yarn docs
 
-# deploy:
-#   provider: pages
-#   local-dir:
-#   skip-cleanup: true
-#   github-token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
-#   keep-history: true
-#   on:
-#     branch: master
 deploy:
   - provider: heroku
     app: cryptic-refuge-96456
@@ -32,5 +24,4 @@ deploy:
   - provider: pages
     skip-cleanup: true
     github-token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
-    keep-history: true
     local-dir: ./docs
