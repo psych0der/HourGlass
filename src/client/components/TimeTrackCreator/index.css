@@ -1,6 +1,7 @@
 @media all and (min-width: 480px) {
   .UserCreator {
     padding: 60px 0;
+    background: green;
   }
   .UserCreator form {
     margin: 0 auto;
